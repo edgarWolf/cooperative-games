@@ -1,5 +1,4 @@
 from typing import List, Tuple
-from coalitions.coalition import Coalition
 from games.base_game import BaseGame
 
 class WeightedVotingGame(BaseGame):
@@ -14,7 +13,7 @@ class WeightedVotingGame(BaseGame):
         self.weigths = weights
         self.quorum = quorum
     
-    def get_winning_coalitions(self) -> List[Coalition]:
+    def get_winning_coalitions(self) -> List:
         """Returns a list containing winning coalitions, i.e all coalitions with a weight >= the quorum."""
         winning_coalitions = []
         for coalition in self.coalitions:
@@ -24,7 +23,7 @@ class WeightedVotingGame(BaseGame):
         return winning_coalitions
 
 
-    def get_pivot_players(self) -> List[Tuple[Coalition, List[int]]]:
+    def get_pivot_players(self) -> List[Tuple[Tuple, List[int]]]:
         """
         Returns a list with all critical players with respect to every winning coalition. 
         A player p is considered as pivot player in a winning coalition C if C becomes a losing coalition if p leaves C.

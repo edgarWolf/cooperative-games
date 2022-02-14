@@ -1,5 +1,4 @@
 from typing import List
-from coalitions.coalition import Coalition
 from games.base_game import BaseGame
 
 class Game(BaseGame):
