@@ -1,5 +1,6 @@
 from typing import List, Tuple
-from games.base_game import BaseGame
+from games.base_game import BaseGam
+import math
 
 class Game(BaseGame):
     """Represents a class for cooperative games."""
@@ -10,7 +11,7 @@ class Game(BaseGame):
         if len(contributions) != len(self.coalitions):
             raise ValueError("Vector of contributions does not match length of coalition vector.")
 
-        if any(contribution for contribution in contributions < 1):
+        if any(contribution for contribution in contributions if contribution < 1):
             raise ValueError("Contributions have to be greater than or equal to 1.")
 
         # TODO : Check wether contributions grow when coalition size grows.
