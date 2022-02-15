@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from games.base_game import BaseGam
+from games.base_game import BaseGame
 import math
 
 class Game(BaseGame):
