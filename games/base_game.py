@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 from itertools import chain, combinations
 
 class BaseGame(ABC):
@@ -18,12 +18,12 @@ class BaseGame(ABC):
         return self._players
 
     @property
-    def coalitions(self) -> List[Tuple]:
+    def coalitions(self) -> Dict:
         """Property for coalitions field."""
         return self._coalitions
 
     @abstractmethod
-    def characteristic_function(self) -> List[Tuple]:
+    def characteristic_function(self) -> Dict:
         """Returns the characteristic function of the game."""
         return
 
@@ -35,8 +35,7 @@ class BaseGame(ABC):
 
     def __powerset(self, elements: List) -> List[Tuple]:
         """Returns the powerset from a given list."""
-        s = list(elements)
-        return list(chain.from_iterable(combinations(s, r) for r in range(1, len(s)+1)))
+        return list(chain.from_iterable(combinations(elements, r) for r in range(1, len(elements)+1)))
 
 
 

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Dict
 from games.base_game import BaseGame
 import math
 
@@ -18,9 +18,9 @@ class Game(BaseGame):
         self.contributions = contributions
 
 
-    def characteristic_function(self) -> List[Tuple]:
+    def characteristic_function(self) -> Dict:
         """Returns the characteristic of this TU game."""
-        return [(coalition, self.contributions[i]) for i, coalition in enumerate(self.coalitions)]
+        return { coalition : self.contributions[i] for i, coalition in enumerate(self.coalitions) }
 
 
 
