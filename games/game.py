@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Tuple, Dict
 from games.base_game import BaseGame
 import math
 
@@ -21,6 +21,34 @@ class Game(BaseGame):
     def characteristic_function(self) -> Dict:
         """Returns the characteristic of this TU game."""
         return { coalition : self.contributions[i] for i, coalition in enumerate(self.coalitions) }
+
+    def get_marginal_contribution(self, coalition: Tuple, player: int) -> int:
+        """Returns the marginal_contribution for a player in a coalition."""
+        
+        # Parameter check
+        if not coalition:
+            raise ValueError("No coalition provided.")
+
+        if not player:
+            raise ValueError("No player provided.")
+
+        if player not in coalition:
+            raise ValueError("Player is not part of coalition.")
+
+        characteristic_function = self.characteristic_function()
+        coalition_payoff = characteristic_function[coalition]
+
+        # If coalition only consists of one player, return payoff of the coalition function directly.
+        if len(coalition) == 1:
+            return coalition_payoff
+
+        coalition_without_player = tuple(filter(lambda x: x != player, coalition))
+        coalition_without_player_payoff = characteristic_function[coalition_without_player]
+
+        return coalition_payoff - coalition_without_player_payoff
+
+
+
 
 
 
