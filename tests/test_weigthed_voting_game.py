@@ -120,8 +120,7 @@ def test_get_pivot_players():
     quorum = 4
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
     expected_output = {
-        (1,) : [], (2,) : [], (3,) : [],
-        (1,2,) : [], (1,3) : [1, 3], (2,3,) : [2,3],
+        (1,3) : [1, 3], (2,3,) : [2,3],
         (1,2,3,) : [3]
     }
 
@@ -131,11 +130,7 @@ def test_get_pivot_players():
     # Special case: No winning coalitions.
     quorum = 99
     game = WeightedVotingGame(3, weights=weights, quorum=quorum)
-    expected_output = {
-        (1,) : [], (2,) : [], (3,) : [],
-        (1,2,) : [], (1,3) : [], (2,3,) : [],
-        (1,2,3,) : []
-    }
+    expected_output = {}
     actual_output = game.get_pivot_players()
     assert actual_output == expected_output
 
