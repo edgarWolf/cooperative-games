@@ -127,8 +127,15 @@ def test_get_pivot_players():
         (1,3) : [1, 3], (2,3,) : [2,3],
         (1,2,3,) : [3]
     }
-
     actual_output = game.get_pivot_players()
+    assert expected_output == actual_output
+
+    expected_output = {
+        (1,): [], (2,) : [], (3,) : [],
+        (1,2) : [], (1,3) : [1, 3], (2,3,) : [2,3],
+        (1,2,3,) : [3]
+    }
+    actual_output = game.get_pivot_players(all_coalitions=True)
     assert expected_output == actual_output
 
     # Special case: No winning coalitions.
@@ -138,6 +145,14 @@ def test_get_pivot_players():
     actual_output = game.get_pivot_players()
     assert actual_output == expected_output
 
+    expected_output = {
+        (1,): [], (2,) : [], (3,) : [],
+        (1,2) : [], (1,3) : [], (2,3,) : [],
+        (1,2,3,) : []
+    }
+    actual_output = game.get_pivot_players(all_coalitions=True)
+    assert expected_output == actual_output
+
     # Edge case: 1 player.
     weights = [1]
     quorum = 1
@@ -145,4 +160,3 @@ def test_get_pivot_players():
     expected_output = {(1,) : [1]}
     actual_output = game.get_pivot_players()
     assert expected_output == actual_output
-    

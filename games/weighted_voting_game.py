@@ -33,13 +33,19 @@ class WeightedVotingGame(BaseGame):
         return [coalition for coalition in self.coalitions if sum(self.weigths[player - 1] for player in coalition) >= self.quorum]
 
 
-    def get_pivot_players(self) -> Dict:
+    def get_pivot_players(self, all_coalitions=False) -> Dict:
         """
         Returns a list with all critical players with respect to every winning coalition. 
         A player p is considered as pivot player in a winning coalition C if C becomes a losing coalition if p leaves C.
         """
         winning_coalitions = self.get_winning_coalitions()
-        return { winning_coaliton : 
-                [player for player in winning_coaliton if  ( sum(self.weigths[winning_player - 1] for winning_player in winning_coaliton) - self.weigths[player - 1] ) < self.quorum ] 
-                for winning_coaliton in winning_coalitions }
+
+        if all_coalitions:
+            return { coalition : 
+                                [player for player in coalition if  ( sum(self.weigths[winning_player - 1] for winning_player in coalition) - self.weigths[player - 1] ) < self.quorum and coalition in winning_coalitions ] 
+                                for coalition in self.coalitions }
+        else:
+            return { winning_coaliton : 
+                    [player for player in winning_coaliton if  ( sum(self.weigths[winning_player - 1] for winning_player in winning_coaliton) - self.weigths[player - 1] ) < self.quorum ] 
+                    for winning_coaliton in winning_coalitions }
             
