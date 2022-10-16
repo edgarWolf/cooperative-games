@@ -3,6 +3,7 @@ from games.weighted_voting_game import WeightedVotingGame
 
 
 def test_constructor():
+    """Test the weighted voting game constructor."""
     # Test a valid weighted voting game.
     weights = [1, 2, 3, ]
     quorum = 4
@@ -39,6 +40,7 @@ def test_constructor():
 
 
 def test_characteristic_function():
+    """Test the characteristic function of a weighted voting game."""
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
@@ -85,6 +87,7 @@ def test_characteristic_function():
 
 
 def test_get_winning_coalitions():
+    """Test the winning coalitions method for weighted voting games."""
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
@@ -116,6 +119,7 @@ def test_get_winning_coalitions():
 
 
 def test_get_pivot_players():
+    """Test the pivot players method for weighted voting games."""
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
