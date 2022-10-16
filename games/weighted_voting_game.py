@@ -10,7 +10,7 @@ class WeightedVotingGame(BaseGame):
         super().__init__(num_players)
 
         # Parameter check.
-        if (len(weights) != num_players):
+        if len(weights) != num_players:
             raise ValueError("Length of player vector and weight vector don't match.")
         if any(weight  for weight  in weights  if weight  < 0):
             raise ValueError("Weight vector containns nonallowed negative weights.")
