@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from multiprocessing.sharedctypes import Value
 from typing import List, Tuple, Dict
 from itertools import chain, combinations
 
@@ -6,8 +7,10 @@ class BaseGame(ABC):
     """
     Represents a base class for games in context of game theory.
     """
-    def __init__(self, num_players) -> None:
+    def __init__(self, num_players: int) -> None:
         """Base constructor for all derived classes."""
+        if num_players < 1:
+            raise ValueError("The number of players has to be greater than or equal to 1.")
         self._players = [i for i in range(1, num_players + 1)]
         self._coalitions = self.__init_coalitions()
 
