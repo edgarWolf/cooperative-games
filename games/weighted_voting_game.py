@@ -60,6 +60,21 @@ class WeightedVotingGame(BaseGame):
         return shapley_shubik_indices
 
 
+    def banzhaf_index(self) -> List[float]:
+        v = self.characteristic_function()
+        banzhaf_indices = []
+        for player in self.players:
+            banzhah_index = 0
+            coalitions_without_player = [coalition for coalition in self.coalitions if player not in coalition]
+            for C in coalitions_without_player:
+                banzhaf_index += v[tuple( sorted( C + (player,) ) )] - v[C]
+            banzhaf_indices.append(banzhaf_index)
+        
+        banzhaf_index_sum = sum(banzhaf_indices)
+        relative_banzhaf_indices = [raw_banzhaf / banzhaf_index_sum for raw_banzhaf in banzhaf_indices]
+        return relative_banzhaf_indices
+
+
     def get_winning_coalitions(self) -> List[Tuple]:
         """Returns a list containing winning coalitions, i.e all coalitions with a sum of weights >= the quorum."""
         return [coalition for coalition in self.coalitions if sum(self.weigths[player - 1] for player in coalition) >= self.quorum]

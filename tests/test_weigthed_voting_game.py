@@ -171,6 +171,22 @@ def test_shapley_shubik_index():
     actual_output = game.shapley_shubik_index()
     assert expected_output == actual_output
 
+    # Special case: One player is never pivot player.
+    weights = [8, 4, 1]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = [1/2, 1/2, 0]
+    actual_output = game.shapley_shubik_index()
+    assert expected_output == actual_output
+
+    # Special case: Only one winning coalition.
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
+    expected_output = [1/4, 1/4, 1/4, 1/4]
+    actual_output = game.shapley_shubik_index()
+    assert expected_output == actual_output
+
     # Edge case: 1 player
     weights = [1]
     quorum = 1
