@@ -162,6 +162,37 @@ def test_get_pivot_players():
     actual_output = game.get_pivot_players()
     assert expected_output == actual_output
 
+def test_get_minimal_winning_coalitions():
+    weights = [1, 2, 3, ]
+    quorum = 4
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = [(1,3), (2,3)]
+    actual_output = game.get_minimal_winning_coalitions()
+    assert expected_output == actual_output
+
+    # Special case: No winning coalitions.
+    quorum = 99
+    game = WeightedVotingGame(3, weights=weights, quorum=quorum)
+    expected_output = []
+    actual_output = game.get_minimal_winning_coalitions()
+    assert expected_output == actual_output
+
+    # Special case: Only one winning coalition which is minimal.
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
+    expected_output = [(1,2,3,4)]
+    actual_output = game.get_minimal_winning_coalitions()
+    assert expected_output == actual_output
+
+    # Edge case: 1 player.
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(num_players=1, weights=weights, quorum=quorum)
+    expected_output = [(1,)]
+    actual_output = game.get_minimal_winning_coalitions()
+    assert expected_output == actual_output
+
 
 def test_shapley_shubik_index():
     # Test usual case.

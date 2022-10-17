@@ -112,6 +112,12 @@ class WeightedVotingGame(BaseGame):
         return [raw_johnston / johnston_sum for raw_johnston in johnston_indices]
 
 
+    def get_minimal_winning_coalitions(self):
+        """Returns a list of the minimal winning coalitions."""
+        critical_coalitions = self.get_pivot_players()
+        return [coalition for coalition, critical_players in critical_coalitions.items() if coalition == tuple(critical_players)]
+
+
     def get_winning_coalitions(self) -> List[Tuple]:
         """Returns a list containing winning coalitions, i.e all coalitions with a sum of weights >= the quorum."""
         return [coalition for coalition in self.coalitions if sum(self.weigths[player - 1] for player in coalition) >= self.quorum]
