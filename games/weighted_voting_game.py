@@ -35,8 +35,17 @@ class WeightedVotingGame(BaseGame):
             - v denotes the characteristic function of the game.
         """
         n = len(self.players)
+        factorial_n = math.factorial(n)
         v = self.characteristic_function()
         shapley_shubik_indices = []
+
+        # Consider edge case with only 1 player. 
+        # In that case, there exists no other coalition than the coalition consisting of that one player.
+        # The loop would not be triggered, such that the return value would be 0 in every execution.
+        # Because of this, return just the value of the characteristic function, since it also represents the shapley-shubik-index in this case. 
+        if n == 1:
+            return [v[(1,)]]
+
         for player in self.players:
             shapley_shubik_index = 0
             coalitions_without_player = [coalition for coalition in self.coalitions if player not in coalition]
@@ -47,7 +56,7 @@ class WeightedVotingGame(BaseGame):
                 # Create a sorted tuple out of the union with the current player, since the key tuples of the characterstic function are sensitive to order.
                 pivot_term = v[tuple( sorted( C + (player,) ) )] - v[C]
                 shapley_shubik_index += C_len_factorial * complement_factorial * pivot_term
-            shapley_shubik_indices.append(shapley_shubik_index / math.factorial(n))
+            shapley_shubik_indices.append(shapley_shubik_index / factorial_n)
         return shapley_shubik_indices
 
 

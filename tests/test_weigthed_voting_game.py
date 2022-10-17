@@ -163,9 +163,18 @@ def test_get_pivot_players():
 
 
 def test_shapley_shubik_index():
+    # Test usual case.
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
     expected_output = [2/3, 1/6, 1/6]
+    actual_output = game.shapley_shubik_index()
+    assert expected_output == actual_output
+
+    # Edge case: 1 player
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(num_players=1, weights=weights, quorum=quorum)
+    expected_output = [1]
     actual_output = game.shapley_shubik_index()
     assert expected_output == actual_output
