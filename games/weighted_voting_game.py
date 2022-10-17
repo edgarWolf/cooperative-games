@@ -35,6 +35,56 @@ class WeightedVotingGame(BaseGame):
         """Returns a list containing winning coalitions, i.e all coalitions with a sum of weights >= the quorum."""
         return [coalition for coalition in self.coalitions if sum(self.weigths[player - 1] for player in coalition) >= self.quorum]
 
+    def preferred_player(self, i: int, j: int) -> int:
+        """
+        Returns the preferred player between the two players passed as parameters.
+        2 conditions must be met, such that i > j:
+            1): For all coalitions S subset N with i not in S and j not in S, it holds:
+                (S union {j}) in W => (S union {i}) in W
+            (2) There exists at least one coalition T subset N with i not in T and j not in T, such that
+                (T union {j}) not in W and (T union {i}) in W.
+        If both conditions are not met, j will be preferred.
+        Otherwise, no preferation exists.
+        """
+        if i not in self.players or j not in self.players:
+            raise ValueError("Specified players are note part of the game.")
+        
+        coalitions = self.coalitions[:-1]
+        condition_one_met = True 
+        condition_two_met = False
+        winning_coalitions = self.get_winning_coalitions()
+
+        # Condition 1:
+        S = [s for s in coalitions if i not in s and j not in s]
+        for s in S:
+            s_union_j = tuple(sorted(s + (j,)))
+            s_union_i = tuple(sorted(s + (i,)))
+            if s_union_j in winning_coalitions and s_union_i not in winning_coalitions:
+                condition_one_met = False
+                break
+
+        # Condition 2:
+        for t in S:
+            t_union_j = tuple(sorted(t + (j,)))
+            t_union_i = tuple(sorted(t + (i,)))
+            if t_union_j not in winning_coalitions and t_union_i in winning_coalitions:
+                condition_two_met = True
+
+        if condition_one_met and condition_two_met:
+            return i
+        if not condition_one_met and not condition_two_met:
+            return j
+        return None
+
+
+        
+        
+
+
+
+
+        
+
 
     def get_pivot_players(self, all_coalitions=False) -> Dict[Tuple, List]:
         """

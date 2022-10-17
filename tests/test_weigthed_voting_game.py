@@ -198,6 +198,53 @@ def test_get_minimal_winning_coalitions():
     actual_output = game.get_minimal_winning_coalitions()
     assert expected_output == actual_output
 
+def test_preferred_player():
+    # Test usual case.
+    weights = [7, 3, 3]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = 1
+    actual_output = game.preferred_player(1, 2)
+    assert expected_output == actual_output
+
+    # Special case: One player is never pivot player.
+    weights = [8, 4, 1]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = 1
+    actual_output = game.preferred_player(1, 3)
+    assert expected_output == actual_output
+    expected_output = 2
+    actual_output = game.preferred_player(2, 3)
+    assert expected_output == actual_output
+    expected_output = None
+    actual_output = game.preferred_player(1, 2)
+    assert expected_output == actual_output
+
+    # Special case: Only one winning coalition.
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
+    expected_output = None
+    actual_output = game.preferred_player(1, 2)
+    assert expected_output == actual_output
+    actual_output = game.preferred_player(1, 3)
+    assert expected_output == actual_output
+    actual_output = game.preferred_player(1, 4)
+    assert expected_output == actual_output
+    actual_output = game.preferred_player(2, 3)
+    assert expected_output == actual_output
+    actual_output = game.preferred_player(2, 4)
+    assert expected_output == actual_output
+    actual_output = game.preferred_player(3, 4)
+    assert expected_output == actual_output
+
+    # Test invalid players.
+    with pytest.raises(ValueError, match="Specified players are note part of the game."):
+        game.preferred_player(0, 1)
+        game.preferred_player(1, 99)
+        game.preferred_player(-1, 1)
+    
 
 def test_shapley_shubik_index():
     # Test usual case.
