@@ -29,6 +29,18 @@ def test_constructor():
     with pytest.raises(ValueError, match="The number of players has to be greater than or equal to 1."):
         game = Game(num_players=0, contributions=contributions)
 
+    # Test non monotone contribution vector:
+    with pytest.raises(ValueError, match="Contributions have to grow monotone by coalition size."):
+        contributions = [1, 2, 3, 2, 4, 5, 3]
+        game = Game(num_players=3, contributions=contributions)
+    
+    # Test monotonity again for contributions with only one player:
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    assert set(game.players) == set([1])
+    assert set(game.contributions) == set(contributions)
+    assert set(game.coalitions) == set([(1,)])
+
 
 def test_characterisitc_function():
     """Test the characteristic function of a game."""
