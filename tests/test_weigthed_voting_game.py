@@ -120,6 +120,7 @@ def test_get_winning_coalitions():
 
 def test_get_pivot_players():
     """Test the pivot players method for weighted voting games."""
+    # Test usual cases.
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
@@ -227,4 +228,37 @@ def test_banzhaf_index():
     game = WeightedVotingGame(num_players=1, weights=weights, quorum=quorum)
     expected_output = [1]
     actual_output = game.banzhaf_index()
+    assert expected_output == actual_output
+
+def test_johnston_index():
+    # Test usual case.
+    weights = [7, 3, 3]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = [2/3, 1/6, 1/6]
+    actual_output = game.johnston_index()
+    assert expected_output == actual_output
+
+   # Special case: One player is never pivot player.
+    weights = [8, 4, 1]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = [1/2, 1/2, 0]
+    actual_output = game.johnston_index()
+    assert expected_output == actual_output
+
+    # Special case: Only one winning coalition.
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
+    expected_output = [1/4, 1/4, 1/4, 1/4]
+    actual_output = game.johnston_index()
+    assert expected_output == actual_output
+
+    # Edge case: 1 player
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(num_players=1, weights=weights, quorum=quorum)
+    expected_output = [1]
+    actual_output = game.johnston_index()
     assert expected_output == actual_output
