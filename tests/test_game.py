@@ -88,6 +88,20 @@ def test_get_marginal_contribution():
     actual_contribution = game.get_marginal_contribution(coalition=selected_coalition, player=selected_player)
     assert expected_contribution == actual_contribution
 
+def test_get_one_coalitions():
+    # Test usual setting.
+    contributions = [1, 2, 3, 3, 4, 5, 6]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [(1,), (2,), (3,)]
+    actual_output = game.get_one_coalitions()
+    assert expected_output == actual_output
+
+    # Edge case: 1 player
+    game = Game(num_players=1, contributions=[1])
+    expected_output = [(1,)]
+    actual_output = game.get_one_coalitions()
+    assert expected_output == actual_output
+
 
     
     

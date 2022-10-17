@@ -40,6 +40,10 @@ class BaseGame(ABC):
         """Returns the powerset from a given list."""
         return list(chain.from_iterable(combinations(elements, r) for r in range(1, len(elements)+1)))
 
+    def get_one_coalitions(self):
+        """Returns a list of one coalitions exisiting in the current game."""
+        return [coalition for coalition in self.coalitions if len(coalition) == 1]
+
 
 
     

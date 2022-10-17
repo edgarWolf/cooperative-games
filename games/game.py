@@ -50,7 +50,7 @@ class Game(BaseGame):
         coalition_without_player_payoff = characteristic_function[coalition_without_player]
 
         return coalition_payoff - coalition_without_player_payoff
-
+   
     
     def __check_if_contributions_are_monotone(self, contributions):
         """
@@ -58,6 +58,8 @@ class Game(BaseGame):
         We define monotonley growing contributions such that any coalition with size i, has to contribute
         a higher or equal value than a coalition with size j, j < i: Contribution(j) <= Contribution(i)
         """
+
+        # TODO: Change this behaviour on a subset basis.
         contribs_monotone = True
         start_idx = 0
         num_players = len(self.players)
