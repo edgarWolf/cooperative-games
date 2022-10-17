@@ -44,6 +44,7 @@ class WeightedVotingGame(BaseGame):
                 C_len = len(C)
                 C_len_factorial = math.factorial(C_len)
                 complement_factorial = math.factorial(n - C_len - 1)
+                # Create a sorted tuple out of the union with the current player, since the key tuples of the characterstic function are sensitive to order.
                 pivot_term = v[tuple( sorted( C + (player,) ) )] - v[C]
                 shapley_shubik_index += C_len_factorial * complement_factorial * pivot_term
             shapley_shubik_indices.append(shapley_shubik_index / math.factorial(n))
