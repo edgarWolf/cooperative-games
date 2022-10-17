@@ -206,6 +206,12 @@ def test_preferred_player():
     expected_output = 1
     actual_output = game.preferred_player(1, 2)
     assert expected_output == actual_output
+    expected_output = 1
+    actual_output = game.preferred_player(1, 3)
+    assert expected_output == actual_output
+    expected_output = None
+    actual_output = game.preferred_player(2, 3)
+    assert expected_output == actual_output
 
     # Special case: One player is never pivot player.
     weights = [8, 4, 1]
@@ -244,7 +250,48 @@ def test_preferred_player():
         game.preferred_player(0, 1)
         game.preferred_player(1, 99)
         game.preferred_player(-1, 1)
+
     
+def test_player_ranking():
+    weights = [7, 3, 3]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = {
+        (1,2): 1,
+        (1,3): 1,
+        (2,3): None
+    }
+    actual_output = game.get_player_ranking()
+    assert expected_output == actual_output
+
+    weights = [8, 4, 1]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = {
+        (1,2): None,
+        (1,3): 1,
+        (2,3): 2,
+    }
+    actual_output = game.get_player_ranking()
+    assert expected_output == actual_output
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
+    expected_output = {
+        (1,2): None,
+        (1,3): None,
+        (1,4): None,
+        (2,3): None,
+        (2,4): None,
+        (3,4): None
+
+    }
+    actual_output = game.get_player_ranking()
+    assert expected_output == actual_output
+    
+
+
 
 def test_shapley_shubik_index():
     # Test usual case.

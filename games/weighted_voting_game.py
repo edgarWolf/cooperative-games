@@ -76,6 +76,18 @@ class WeightedVotingGame(BaseGame):
             return j
         return None
 
+    def get_player_ranking(self) -> List[int]:
+        """Returns a ranking on the players in the game."""
+        preferations = {}
+        for i in self.players:
+            for j in self.players[i:]:
+                preferred_player = self.preferred_player(i, j)
+                preferations[(i, j)] = preferred_player
+        return preferations
+
+
+
+
 
         
         
