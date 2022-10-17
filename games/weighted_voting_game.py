@@ -110,23 +110,41 @@ class WeightedVotingGame(BaseGame):
 
         johnston_sum = sum(johnston_indices)
         return [raw_johnston / johnston_sum for raw_johnston in johnston_indices]
-        
+
 
     def public_good_index(self) -> List[float]:
         """
         Returns a list of the public good index for all players in the game.
         The public good index for a player j is defined as:
         |W^m_j| / sum^{n}_{k=1} |W^m_k|, where
-            - W^m_j denotes all minimal coalitions j belongs to.
+            - W^m_j denotes all minimal winning coalitions j belongs to.
         """
-        minmal_winning_coalitions = self.get_minimal_winning_coalitions()
-        num_minimal_winning_coalitions = len(minmal_winning_coalitions)
+        W_m = self.get_minimal_winning_coalitions()
+        W_m_len = len(W_m)
         pgi_list = []
         for player in self.players:
-            minimal_coalitions_with_player = [coalition for coalition in minmal_winning_coalitions if player in coalition]
-            pgi_list.append(len(minimal_coalitions_with_player) / num_minimal_winning_coalitions)
+            W_m_j = [coalition for coalition in W_m if player in coalition]
+            pgi_list.append(len(W_m_j) / W_m_len)
         pgi_sum = sum(pgi_list)
         return [pgi / pgi_sum for pgi in pgi_list]
+
+    
+    def public_help_index(self) -> List[float]:
+        """
+        Returns a list of the public help index for all players in the game.
+        The public help index for a player j is defined as:
+        |W_j| / sum^{n}_{k=1} |W_k|, where
+            - W_j denotes all winning coalitions j belongs to.
+        """
+        W = self.get_winning_coalitions()
+        W_len = len(W)
+        phi_list = []
+        for player in self.players:
+            W_j = [coalition for coalition in W if player in coalition]
+            phi_list.append(len(W_j) / W_len)
+        phi_sum = sum(phi_list)
+        return [phi / phi_sum for phi in phi_list]
+
 
 
     def get_minimal_winning_coalitions(self):
