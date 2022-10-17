@@ -1,8 +1,6 @@
-import enum
 from typing import List, Tuple, Dict
 from games.base_game import BaseGame
 from scipy.special import binom
-import math
 
 class Game(BaseGame):
     """Represents a class for cooperative games."""
@@ -27,7 +25,7 @@ class Game(BaseGame):
         return { coalition : self.contributions[i] for i, coalition in enumerate(self.coalitions) }
 
     def get_marginal_contribution(self, coalition: Tuple, player: int) -> int:
-        """Returns the marginal_contribution for a player in a coalition."""
+        """Returns the marginal contribution for a player in a coalition."""
         
         # Parameter check
         if not coalition:

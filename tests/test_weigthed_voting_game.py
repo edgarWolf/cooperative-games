@@ -160,3 +160,12 @@ def test_get_pivot_players():
     expected_output = {(1,) : [1]}
     actual_output = game.get_pivot_players()
     assert expected_output == actual_output
+
+
+def test_shapley_shubik_index():
+    weights = [7, 3, 3]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = [2/3, 1/6, 1/6]
+    actual_output = game.shapley_shubik_index()
+    assert expected_output == actual_output
