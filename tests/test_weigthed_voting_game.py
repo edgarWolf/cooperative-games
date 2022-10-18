@@ -175,6 +175,15 @@ def test_get_minimal_winning_coalitions():
     actual_output = game.get_minimal_winning_coalitions()
     assert expected_output == actual_output
 
+
+    weights = [7, 3, 3]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = [(1,2), (1,3)]
+    actual_output = game.get_minimal_winning_coalitions()
+    assert expected_output == actual_output
+
+
     # Special case: No winning coalitions.
     quorum = 99
     game = WeightedVotingGame(3, weights=weights, quorum=quorum)
@@ -250,6 +259,44 @@ def test_preferred_player():
         game.preferred_player(0, 1)
         game.preferred_player(1, 99)
         game.preferred_player(-1, 1)
+
+
+def test_get_shift_minimal_winning_coalitions():
+
+    weights = [1, 2, 3, ]
+    quorum = 4
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = [(1,3), (2,3)]
+    actual_output = game.get_minimal_winning_coalitions()
+    assert expected_output == actual_output
+
+    weights = [7, 3, 3]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = []
+    actual_output = game.get_shift_winning_coalitions()
+    assert expected_output == actual_output
+
+    weights = [8, 4, 1]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    expected_output = []
+    actual_output = game.get_shift_winning_coalitions()
+    assert expected_output == actual_output
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
+    expected_output = []
+    actual_output = game.get_shift_winning_coalitions()
+    assert expected_output == actual_output
+
+    weights = [5, 40, 26, 25, 4]
+    quorum = 51
+    game = WeightedVotingGame(num_players=5, weights=weights, quorum=quorum)
+    expected_output = []
+    actual_output = game.get_shift_winning_coalitions()
+    assert expected_output == actual_output
 
     
 def test_player_ranking():

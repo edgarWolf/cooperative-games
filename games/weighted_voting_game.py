@@ -35,6 +35,43 @@ class WeightedVotingGame(BaseGame):
         """Returns a list containing winning coalitions, i.e all coalitions with a sum of weights >= the quorum."""
         return [coalition for coalition in self.coalitions if sum(self.weigths[player - 1] for player in coalition) >= self.quorum]
 
+    def get_shift_winning_coalitions(self) -> List[Tuple]:
+        """
+        Returns a list containing all shift-minimal coalitions. 
+        A minimal winning coalition S in W_m is called shift-minimal, if it holds, that
+        for every player i in S and every player j not in S with i > j, it holds:
+            (S/{i}) union {j} not in W_m.
+        """
+        W_m = self.get_minimal_winning_coalitions()
+        shift_minmimal_winning_coalitions = []
+        unique_pivot_players = set(sum(W_m, ()))
+        for S in W_m:
+            is_condition_met = True
+            for i in S:
+                players_not_in_S = [player for player in unique_pivot_players if player not in S and self.preferred_player(i, player) == i] 
+
+                # No players to change.
+                if not players_not_in_S:
+                    is_condition_met = False
+                    break
+                
+                for j in players_not_in_S:
+                    S_without_i = tuple(p for p in S if p != i)
+                    S_without_i_union_j = tuple(sorted( S_without_i + (j,) ))
+                    # Found a minimal winning coalition by shifting with a less desirable player --> Not shift minimal.
+                    if S_without_i_union_j in W_m:
+                        is_condition_met = False
+                        break
+
+                # Break out of outer loop
+                if not is_condition_met:
+                    break
+            
+            if is_condition_met:
+                shift_minmimal_winning_coalitions.append(S)
+
+        return shift_minmimal_winning_coalitions
+
     def preferred_player(self, i: int, j: int) -> int:
         """
         Returns the preferred player between the two players passed as parameters.
@@ -69,7 +106,7 @@ class WeightedVotingGame(BaseGame):
             t_union_i = tuple(sorted(t + (i,)))
             if t_union_j not in winning_coalitions and t_union_i in winning_coalitions:
                 condition_two_met = True
-
+        # A and B => C == not((A and B) or C) ==>not(A and B) and not(C) == (not(A) or not(B)) and not(C) 
         if condition_one_met and condition_two_met:
             return i
         if not condition_one_met and not condition_two_met:
