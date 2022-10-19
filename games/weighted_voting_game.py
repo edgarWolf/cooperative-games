@@ -72,7 +72,7 @@ class WeightedVotingGame(BaseGame):
 
         return shift_minmimal_winning_coalitions
 
-    def preferred_player(self, i: int, j: int) -> int:
+    def preferred_player(self, i: int, j: int, prefer_by_weight=True) -> int:
         """
         Returns the preferred player between the two players passed as parameters.
         2 conditions must be met, such that i > j:
@@ -99,18 +99,30 @@ class WeightedVotingGame(BaseGame):
             if s_union_j in winning_coalitions and s_union_i not in winning_coalitions:
                 condition_one_met = False
                 break
-
+        
         # Condition 2:
         for t in S:
             t_union_j = tuple(sorted(t + (j,)))
             t_union_i = tuple(sorted(t + (i,)))
             if t_union_j not in winning_coalitions and t_union_i in winning_coalitions:
                 condition_two_met = True
-        # A and B => C == not((A and B) or C) ==>not(A and B) and not(C) == (not(A) or not(B)) and not(C) 
+        
+        # Both conditions satisfied.
         if condition_one_met and condition_two_met:
             return i
+        
+
+        # Prefer a player by weight if condition 1 is met, but condition 2 not.
+        # Since every winning coalition with j is also a winning with i, but there is no coalition,
+        # such that this coalition is winning with i but not with j, we can use the weight to indicate a more sensitive preferation.
+        if prefer_by_weight and condition_one_met and not condition_two_met:
+            return i if self.weigths[i - 1 ] > self.weigths[j - 1] else None 
+
+        # Neither of the conditions satiesfied, so player j is actually preferred.
         if not condition_one_met and not condition_two_met:
             return j
+
+        # No preference.
         return None
 
     def get_player_ranking(self) -> List[int]:

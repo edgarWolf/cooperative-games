@@ -232,7 +232,7 @@ def test_preferred_player():
     expected_output = 2
     actual_output = game.preferred_player(2, 3)
     assert expected_output == actual_output
-    expected_output = None
+    expected_output = 1
     actual_output = game.preferred_player(1, 2)
     assert expected_output == actual_output
 
@@ -240,18 +240,53 @@ def test_preferred_player():
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
-    expected_output = None
+    expected_output = 1
     actual_output = game.preferred_player(1, 2)
     assert expected_output == actual_output
     actual_output = game.preferred_player(1, 3)
     assert expected_output == actual_output
     actual_output = game.preferred_player(1, 4)
     assert expected_output == actual_output
+    expected_output = None
     actual_output = game.preferred_player(2, 3)
     assert expected_output == actual_output
     actual_output = game.preferred_player(2, 4)
     assert expected_output == actual_output
     actual_output = game.preferred_player(3, 4)
+    assert expected_output == actual_output
+
+    weights = [5, 2, 2, 1, 1]
+    quorum = 6
+    game = WeightedVotingGame(num_players=5, weights=weights, quorum=quorum)
+    expected_output = 1
+    actual_output = game.preferred_player(1,2)
+    assert expected_output == actual_output
+    expected_output = 1
+    actual_output = game.preferred_player(1,3)
+    assert expected_output == actual_output
+    expected_output = 1
+    actual_output = game.preferred_player(1,4)
+    assert expected_output == actual_output
+    expected_output = 1
+    actual_output = game.preferred_player(1,5)
+    assert expected_output == actual_output
+    expected_output = None
+    actual_output = game.preferred_player(2,3)
+    assert expected_output == actual_output
+    expected_output = 2
+    actual_output = game.preferred_player(2,4)
+    assert expected_output == actual_output
+    expected_output = 2
+    actual_output = game.preferred_player(2,5)
+    assert expected_output == actual_output
+    expected_output = 3
+    actual_output = game.preferred_player(3,4)
+    assert expected_output == actual_output
+    expected_output = 3
+    actual_output = game.preferred_player(3,5)
+    assert expected_output == actual_output
+    expected_output = None
+    actual_output = game.preferred_player(4,5)
     assert expected_output == actual_output
 
     # Test invalid players.
@@ -298,6 +333,13 @@ def test_get_shift_minimal_winning_coalitions():
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
+    # weights = [5, 2, 2, 1, 1]
+    # quorum = 6
+    # game = WeightedVotingGame(num_players=5, weights=weights, quorum=quorum)
+    # expected_output = [(1,4), (1,5,), (2,3,4,5),]
+    # actual_output = game.get_shift_winning_coalitions()
+    # assert expected_output == actual_output
+
     
 def test_player_ranking():
     weights = [7, 3, 3]
@@ -315,7 +357,7 @@ def test_player_ranking():
     quorum = 10
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
     expected_output = {
-        (1,2): None,
+        (1,2): 1,
         (1,3): 1,
         (2,3): 2,
     }
@@ -326,9 +368,9 @@ def test_player_ranking():
     quorum = 5
     game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
     expected_output = {
-        (1,2): None,
-        (1,3): None,
-        (1,4): None,
+        (1,2): 1,
+        (1,3): 1,
+        (1,4): 1,
         (2,3): None,
         (2,4): None,
         (3,4): None
