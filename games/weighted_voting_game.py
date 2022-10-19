@@ -75,12 +75,14 @@ class WeightedVotingGame(BaseGame):
     def preferred_player(self, i: int, j: int, prefer_by_weight=True) -> int:
         """
         Returns the preferred player between the two players passed as parameters.
+        The function is commutative, such that on input (i,j) returns i if i > j, and accordingly j on input(j,i) if j > i.
         2 conditions must be met, such that i > j:
             1): For all coalitions S subset N with i not in S and j not in S, it holds:
                 (S union {j}) in W => (S union {i}) in W
             (2) There exists at least one coalition T subset N with i not in T and j not in T, such that
                 (T union {j}) not in W and (T union {i}) in W.
         If both conditions are not met, j will be preferred.
+        If only condition 1 is met, and preferation by weight is enabled, player i will be prefered, if w(i) > w(j), else no preferation exists.
         Otherwise, no preferation exists.
         """
         if i not in self.players or j not in self.players:
@@ -116,7 +118,11 @@ class WeightedVotingGame(BaseGame):
         # Since every winning coalition with j is also a winning with i, but there is no coalition,
         # such that this coalition is winning with i but not with j, we can use the weight to indicate a more sensitive preferation.
         if prefer_by_weight and condition_one_met and not condition_two_met:
-            return i if self.weigths[i - 1 ] > self.weigths[j - 1] else None 
+            if self.weigths[i - 1] > self.weigths[j - 1]:
+                return i
+            elif self.weigths[j - 1] > self.weigths[i -1]:
+                return j
+            return None
 
         # Neither of the conditions satiesfied, so player j is actually preferred.
         if not condition_one_met and not condition_two_met:
