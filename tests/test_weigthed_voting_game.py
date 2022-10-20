@@ -352,28 +352,28 @@ def test_get_shift_minimal_winning_coalitions():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
-    expected_output = []
+    expected_output = [(1,2), (1,3)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
-    expected_output = []
+    expected_output = [(1,2)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
-    expected_output = []
+    expected_output = [(1,2,3,4)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [5, 40, 26, 25, 4]
     quorum = 51
     game = WeightedVotingGame(num_players=5, weights=weights, quorum=quorum)
-    expected_output = []
+    expected_output = [(3,4,)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 

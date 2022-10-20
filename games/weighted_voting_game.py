@@ -41,7 +41,9 @@ class WeightedVotingGame(BaseGame):
         A minimal winning coalition S in W_m is called shift-minimal, if it holds, that
         for every player i in S and every player j not in S with i > j, it holds:
             (S/{i}) union {j} not in W_m.
+        A shift minimal winning coalition is therefore are minimal winning coalition, where no player can not be replaced by a less desired player.
         """
+
         W_m = self.get_minimal_winning_coalitions()
         shift_minmimal_winning_coalitions = []
         unique_pivot_players = set(sum(W_m, ()))
@@ -49,11 +51,6 @@ class WeightedVotingGame(BaseGame):
             is_condition_met = True
             for i in S:
                 players_not_in_S = [player for player in unique_pivot_players if player not in S and self.preferred_player(i, player) == i] 
-
-                # No players to change.
-                if not players_not_in_S:
-                    is_condition_met = False
-                    break
                 
                 for j in players_not_in_S:
                     S_without_i = tuple(p for p in S if p != i)
@@ -139,18 +136,6 @@ class WeightedVotingGame(BaseGame):
                 preferred_player = self.preferred_player(i, j)
                 preferations[(i, j)] = preferred_player
         return preferations
-
-
-
-
-
-        
-        
-
-
-
-
-        
 
 
     def get_pivot_players(self, all_coalitions=False) -> Dict[Tuple, List]:
