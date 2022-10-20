@@ -5,6 +5,7 @@ from indices.johnston import JohnstonIndex
 from indices.pgi import PublicGoodIndex
 from indices.phi import PublicHelpIndex
 from indices.shapley import ShapleyShubikIndex
+from indices.shift import ShiftIndex
 
 
 def test_constructor():
@@ -341,12 +342,11 @@ def test_preferred_player():
 
 
 def test_get_shift_minimal_winning_coalitions():
-
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
-    expected_output = [(1,3), (2,3)]
-    actual_output = game.get_minimal_winning_coalitions()
+    expected_output = [(1,3)]
+    actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [7, 3, 3]
@@ -608,4 +608,66 @@ def test_phi_index():# Test usual case.
     phi = PublicHelpIndex(game=game)
     expected_output = [1]
     actual_output = phi.compute()
+    assert expected_output == actual_output
+
+def test_shift_index():
+    weights = [1, 2, 3, ]
+    quorum = 4
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    shift = ShiftIndex(game=game)    
+    expected_output = [1/2, 0, 1/2]
+    actual_output = shift.compute()
+    assert expected_output == actual_output
+
+
+    weights = [7, 3, 3]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    shift = ShiftIndex(game=game)    
+    expected_output = [(1,2), (1,3)]
+    expected_output = [1/2, 1/4, 1/4]
+    actual_output = shift.compute()
+    assert expected_output == actual_output
+
+
+    weights = [5, 2, 2, 1, 1]
+    quorum = 6
+    game = WeightedVotingGame(num_players=5, weights=weights, quorum=quorum)
+    shift = ShiftIndex(game=game)
+    expected_output = [1/4, 1/8, 1/8, 1/4, 1/4]
+    actual_output = shift.compute()
+    assert expected_output == actual_output
+
+    
+    weights = [8, 4, 1]
+    quorum = 10
+    game = WeightedVotingGame(num_players=3, weights=weights, quorum=quorum)
+    shift = ShiftIndex(game=game)
+    expected_output = [1/2, 1/2, 0]
+    actual_output = shift.compute()
+    assert expected_output == actual_output
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(num_players=4, weights=weights, quorum=quorum)
+    shift = ShiftIndex(game=game)
+    expected_output = [1/4, 1/4, 1/4, 1/4]
+    actual_output = shift.compute()
+    assert expected_output == actual_output
+
+    weights = [5, 40, 26, 25, 4]
+    quorum = 51
+    game = WeightedVotingGame(num_players=5, weights=weights, quorum=quorum)
+    shift = ShiftIndex(game=game)
+    expected_output = [0, 0, 1/2, 1/2, 0]
+    actual_output = shift.compute()
+    assert expected_output == actual_output
+
+    # Edge case: 1 player
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(num_players=1, weights=weights, quorum=quorum)
+    shift = ShiftIndex(game=game)
+    expected_output = [1]
+    actual_output = shift.compute()
     assert expected_output == actual_output
