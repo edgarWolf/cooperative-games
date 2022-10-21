@@ -21,7 +21,7 @@ class BaseGame(ABC):
         return self._players
 
     @property
-    def coalitions(self) -> Dict:
+    def coalitions(self) -> List[Tuple]:
         """Property for coalitions field."""
         return self._coalitions
 

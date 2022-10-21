@@ -127,9 +127,41 @@ def test_get_utopia_payoff_vector():
     game = Game(num_players=1, contributions=contributions)
     expected_output = [1]
     actual_output = game.get_utopia_payoff_vector()
-    assert expected_output
+    assert expected_output == actual_output
 
+def test_get_minimal_rights_vector():
+
+    # Test usual setting.
+    contributions = [1, 2, 3, 3, 4, 5, 6]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [1, 2, 3]
+    actual_output = game.get_minimal_rights_vector()
+    assert expected_output == actual_output
+
+    contributions = [0, 0 ,0, 60, 60, 60, 72]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [48, 48, 48]
+    actual_output = game.get_minimal_rights_vector()
+    assert expected_output == actual_output
+
+
+    contributions = [2, 4, 5, 18, 14, 9, 24]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [8, 4, 5]
+    actual_output = game.get_minimal_rights_vector()
+    assert expected_output == actual_output
+
+    contributions = [1, 2, 3, 3, 5, 5, 8]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [1, 2, 3]
+    actual_output = game.get_minimal_rights_vector()
+    assert expected_output
     
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [1]
+    actual_output = game.get_minimal_rights_vector()
+    assert expected_output == actual_output
     
 
 

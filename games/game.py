@@ -67,6 +67,28 @@ class Game(BaseGame):
             M.append(v_N - v_N_without_i)
         return M
 
+
+    def get_minimal_rights_vector(self):
+        v = self.characteristic_function()
+        M = self.get_utopia_payoff_vector()
+        R = []
+        for i in self.players:
+            S_vec = [S for S in self.coalitions if i in S]
+            R_S = []
+            for S in S_vec:
+                v_S = v[S]
+                M_j_sum = sum(M_j for index, M_j in enumerate(M) if (index + 1) != i and (index + 1) in S)
+                R_s_i = v_S - M_j_sum
+                R_S.append(R_s_i)
+            R.append(max(R_S))
+        return R
+
+
+
+                
+
+
+
    
     
     def __check_if_contributions_are_monotone(self, contributions):
