@@ -69,6 +69,15 @@ class Game(BaseGame):
 
 
     def get_minimal_rights_vector(self):
+        """
+        Returns a list representing the minimal rights vector of the game.
+        The minimal rights vector consists of the maximum remainders R(S, i) for a player i in coalition S.
+        The remainder R(S,i) represents the the payoff player i receives in coalition S, if all other players in the coalition 
+        get their utopia-payoff, i.e. R(S,i) = v(S) - sum_{j in S, j != i} M_j.
+        Threrefore the components of the minimal rights vector as
+        m_i = max_{S: i in S} R(S, i) for i = 1,...,n,
+        A player i can justify a minimum payoff of m_i when joining the grand coalition.
+        """
         v = self.characteristic_function()
         M = self.get_utopia_payoff_vector()
         R = []
@@ -84,13 +93,6 @@ class Game(BaseGame):
         return R
 
 
-
-                
-
-
-
-   
-    
     def __check_if_contributions_are_monotone(self, contributions):
         """
         Checks wheter the contribution vector contains montonely growing contributions.
