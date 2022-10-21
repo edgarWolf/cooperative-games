@@ -11,10 +11,7 @@ class ShapleyValue(PowerValue):
 
 
 class ShapleyShubikIndex(PowerIndex):
-    def __init__(self, game: WeightedVotingGame) -> None:
-        super().__init__(game=game)
-    
-    def compute(self):
+    def compute(self, game: WeightedVotingGame):
         """
         Returns a list of the shapely-shubik-indices for all players in the game.
         The shapley-shubik-index for a player j is defined as:
@@ -23,9 +20,9 @@ class ShapleyShubikIndex(PowerIndex):
             - n denotes the number of players in the game.
             - v denotes the characteristic function of the game.
         """
-        n = len(self.game.players)
+        n = len(game.players)
         factorial_n = math.factorial(n)
-        v = self.game.characteristic_function()
+        v = game.characteristic_function()
         shapley_shubik_indices = []
 
         # Consider edge case with only 1 player. 
@@ -35,9 +32,9 @@ class ShapleyShubikIndex(PowerIndex):
         if n == 1:
             return [v[(1,)]]
 
-        for player in self.game.players:
+        for player in game.players:
             shapley_shubik_index = 0
-            coalitions_without_player = [coalition for coalition in self.game.coalitions if player not in coalition]
+            coalitions_without_player = [coalition for coalition in game.coalitions if player not in coalition]
             for C in coalitions_without_player:
                 C_len = len(C)
                 C_len_factorial = math.factorial(C_len)

@@ -4,10 +4,7 @@ from indices.power_index import PowerIndex
 
 
 class JohnstonIndex(PowerIndex):
-    def __init__(self, game: WeightedVotingGame) -> None:
-        super().__init__(game=game)
-
-    def compute(self) -> List[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the johnston-indices for all players in the game.
         The johnston-index for a player j is defined as:
@@ -15,9 +12,9 @@ class JohnstonIndex(PowerIndex):
             - VC denotes the critical coalitions, i.e. the coalitions with at least one pivot player.
             - r_j(S) denotes the reciprocal of the number of pivot players in S, if j is a pivot player, 0 else.
         """
-        VC = self.game.get_pivot_players()
+        VC = game.get_pivot_players()
         johnston_indices = []
-        for player in self.game.players:
+        for player in game.players:
             johnston_raw = 0
             for S, critical_players in VC.items():
                 r_S = 1 / len(critical_players)

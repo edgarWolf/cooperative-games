@@ -11,10 +11,7 @@ class BanzhafValue(PowerValue):
 
 
 class BanzhafIndex(PowerIndex):
-    def __init__(self, game: WeightedVotingGame) -> None:
-        super().__init__(game=game)
-    
-    def compute(self) -> List[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the banzhaf-indices for all players in the game.
         The banzhaf-index for a player j is defined as:
@@ -23,18 +20,18 @@ class BanzhafIndex(PowerIndex):
             - n denotes the number of players in the game.
             - v denotes the characteristic function of the game.
         """
-        v = self.game.characteristic_function()
+        v = game.characteristic_function()
         banzhaf_indices = []
 
         # Consider edge case with only 1 player. 
         # In that case, there exists no other coalition than the coalition consisting of that one player.
         # The loop would not be triggered, such that the return value would be 0 in every execution.
         # Because of this, return just the value of the characteristic function, since it also represents the shapley-shubik-index in this case. 
-        if len(self.game.players) == 1:
+        if len(game.players) == 1:
             return [v[(1,)]]
 
-        for player in self.game.players:
-            coalitions_without_player = [coalition for coalition in self.game.coalitions if player not in coalition]
+        for player in game.players:
+            coalitions_without_player = [coalition for coalition in game.coalitions if player not in coalition]
             banzhaf_index = sum( v[tuple( sorted( C + (player,) ) )] - v[C] for C in coalitions_without_player )
             banzhaf_indices.append(banzhaf_index)
         
