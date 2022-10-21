@@ -50,6 +50,13 @@ class Game(BaseGame):
         return coalition_payoff - coalition_without_player_payoff
     
     def get_utopia_payoff_vector(self):
+        """
+        Returns a list of the utopia-payoffs for all players in the game.
+        The utopia-payoff M_i of a player i is defined as 
+        M_i = v(N) - v(N\{i}), where
+            - v denotes the characteristic function of the game.
+            - N denotes the grand coalition.
+        """
         N = self.coalitions[-1]
         v = self.characteristic_function()
         v_N = v[N]
