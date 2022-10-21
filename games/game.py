@@ -11,8 +11,8 @@ class Game(BaseGame):
         if len(contributions) != len(self.coalitions):
             raise ValueError("Vector of contributions does not match length of coalition vector.")
 
-        if any(contribution for contribution in contributions if contribution < 1):
-            raise ValueError("Contributions have to be greater than or equal to 1.")
+        if any(contribution for contribution in contributions if contribution < 0):
+            raise ValueError("Contributions have to be greater than or equal to 0.")
 
         if not self.__check_if_contributions_are_monotone(contributions):
             raise ValueError("Contributions have to grow monotone by coalition size.")
@@ -48,6 +48,18 @@ class Game(BaseGame):
         coalition_without_player_payoff = characteristic_function[coalition_without_player]
 
         return coalition_payoff - coalition_without_player_payoff
+    
+    def get_utopia_payoff_vector(self):
+        N = self.coalitions[-1]
+        v = self.characteristic_function()
+        v_N = v[N]
+        M = []
+        for player in self.players:
+            N_without_i = tuple(sorted(p for p in N if p != player))
+            v_N_without_i = v[tuple(sorted(p for p in N if p != player))] if N_without_i in v else 0
+            M.append(v_N - v_N_without_i)
+        return M
+
    
     
     def __check_if_contributions_are_monotone(self, contributions):

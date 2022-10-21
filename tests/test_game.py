@@ -22,7 +22,7 @@ def test_constructor():
 
     # Test another invalid contribution vector:
     contributions = [0, -1, -2, 3, 4, 5, 6]
-    with pytest.raises(ValueError, match="Contributions have to be greater than or equal to 1."):
+    with pytest.raises(ValueError, match="Contributions have to be greater than or equal to 0."):
         game = Game(num_players=3, contributions=contributions)
 
     # Test invalid number of players:
@@ -102,6 +102,32 @@ def test_get_one_coalitions():
     actual_output = game.get_one_coalitions()
     assert expected_output == actual_output
 
+
+def test_get_utopia_payoff_vector():
+    # Test usual setting.
+    contributions = [1, 2, 3, 3, 4, 5, 6]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [1, 2, 3]
+    actual_output = game.get_utopia_payoff_vector()
+    assert expected_output == actual_output
+
+    contributions = [0, 0, 0, 60, 60, 60, 72]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [12, 12, 12]
+    actual_output = game.get_utopia_payoff_vector()
+    assert expected_output
+
+    contributions = [1, 2, 3, 3, 5, 5, 8]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [3, 3, 5]
+    actual_output = game.get_utopia_payoff_vector()
+    assert expected_output
+
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [1]
+    actual_output = game.get_utopia_payoff_vector()
+    assert expected_output
 
     
     
