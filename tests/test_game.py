@@ -164,6 +164,54 @@ def test_get_minimal_rights_vector():
     assert expected_output == actual_output
     
 
+def test_get_imputation_vertices():
+
+    contributions = [1, 2, 3, 3, 4, 5, 6]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [
+        [1, 2, 3],
+    ]
+    actual_output = game.get_imputation_vertices()
+    assert expected_output == actual_output
+
+    contributions = [1, 2, 3, 3, 5, 5, 8]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [
+        [3, 2, 3,],
+        [1, 4, 3,],
+        [1, 2, 5],
+    ]
+    actual_output = game.get_minimal_rights_vector()
+    assert expected_output
+
+    contributions = [0, 0 ,0, 60, 60, 60, 72]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [
+        [72, 0, 0],
+        [0, 72, 0],
+        [0, 0, 72],
+    ]
+    actual_output = game.get_imputation_vertices()
+    assert expected_output == actual_output
+
+    contributions = [2, 4, 5, 18, 24, 9, 24]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [
+        [15, 4, 5],
+        [2, 17, 5],
+        [2, 4, 18],
+    ]
+    actual_output = game.get_imputation_vertices()
+    assert expected_output == actual_output
+
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [
+        [1,]
+    ]
+    actual_output = game.get_imputation_vertices()
+    assert expected_output == actual_output
+
 
 
 

@@ -67,6 +67,39 @@ class Game(BaseGame):
         return M
 
 
+    def get_imputation_vertices(self) -> list[float]:
+        """
+        Returns a matrix representing the imputation vertices of the game.
+        On a input of a n-player game, a n x n matrix is being returned, each row representing a vertex of a imputation.
+        A vector satisfying following two conditions is considered an imputation:
+            - Pareto-efficency: sum_^{n}{j=1} u_j = v(N)
+            - Individual rationality: u_j >= v({j}), for all j = 1,...,n
+        where N denotes the grand coalition and v the coalition function.
+        A imputation vector u is payoff vector, in which the payoffs are distributed in such a way, that the players will have a reason to join the grand coalition.
+        The imputations of the game is the convex hull of the obtained imputation vertices.
+        """
+        v = self.characteristic_function()
+        N = self.coalitions[-1]
+        v_N = v[N]
+        U_vecs = []
+        for player in self.players:
+            # Get other players than the current player
+            other_players = [j for j in self.players if j != player]
+            # Calculate the maximum payoff the player can get.
+            u_i = v_N - sum(v[(j,)] for j in other_players)
+            # Create the payoff vector
+            U = [-1 for player in self.players]
+            U[player - 1] = u_i
+            # Fill in the other payoffs.
+            for j in other_players:
+                U[j - 1] = v[(j,)]
+
+            # If some vertices overlap, don't add them multiple times.
+            if U not in U_vecs:
+                U_vecs.append(U)
+        return U_vecs
+
+        
     def get_minimal_rights_vector(self) -> list[float]:
         """
         Returns a list representing the minimal rights vector of the game.
