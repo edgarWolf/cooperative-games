@@ -1,10 +1,9 @@
-from typing import List
 from games.weighted_voting_game import WeightedVotingGame
 from indices.power_index import PowerIndex
 
 
 class JohnstonIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> List[float]:
+    def compute(self, game: WeightedVotingGame) -> list[float]:
         """
         Returns a list of the johnston-indices for all players in the game.
         The johnston-index for a player j is defined as:

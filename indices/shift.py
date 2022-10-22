@@ -1,9 +1,8 @@
-from typing import List
 from indices.power_index import PowerIndex
 from games.weighted_voting_game import WeightedVotingGame
 
 class ShiftIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> List[float]:
+    def compute(self, game: WeightedVotingGame) -> list[float]:
         """
         Returns a list of the shift-indices for all players in the game.
         The shift-index for a player j is defined as:

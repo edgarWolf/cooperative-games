@@ -1,7 +1,6 @@
 from games.weighted_voting_game import WeightedVotingGame
 from indices.power_value import PowerValue
 from indices.power_index import PowerIndex
-from typing import List
 
 class BanzhafValue(PowerValue):
     def __init__(self) -> None:
@@ -11,7 +10,7 @@ class BanzhafValue(PowerValue):
 
 
 class BanzhafIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> List[float]:
+    def compute(self, game: WeightedVotingGame) -> list[float]:
         """
         Returns a list of the banzhaf-indices for all players in the game.
         The banzhaf-index for a player j is defined as:

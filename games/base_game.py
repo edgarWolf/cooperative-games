@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from multiprocessing.sharedctypes import Value
-from typing import List, Tuple, Dict
 from itertools import chain, combinations
 
 class BaseGame(ABC):
@@ -16,31 +14,31 @@ class BaseGame(ABC):
 
 
     @property
-    def players(self) -> List[int]:
+    def players(self) -> list[int]:
         """Property for players field."""
         return self._players
 
     @property
-    def coalitions(self) -> List[Tuple]:
+    def coalitions(self) -> list[tuple]:
         """Property for coalitions field."""
         return self._coalitions
 
     @abstractmethod
-    def characteristic_function(self) -> Dict:
+    def characteristic_function(self) -> dict[tuple, int]:
         """Returns the characteristic function of the game."""
         return
 
-    def __init_coalitions(self) -> List[Tuple]:
+    def __init_coalitions(self) -> list[tuple]:
         """Returns all possible coalitions based on the player vector of the current game."""
         powerset = self.__powerset(self.players)
         return powerset
         
 
-    def __powerset(self, elements: List) -> List[Tuple]:
+    def __powerset(self, elements: list) -> list[tuple]:
         """Returns the powerset from a given list."""
         return list(chain.from_iterable(combinations(elements, r) for r in range(1, len(elements)+1)))
 
-    def get_one_coalitions(self):
+    def get_one_coalitions(self) -> list[tuple]:
         """Returns a list of one coalitions exisiting in the current game."""
         return [coalition for coalition in self.coalitions if len(coalition) == 1]
 

@@ -1,10 +1,9 @@
-from typing import List
 from games.weighted_voting_game import WeightedVotingGame
 from indices.power_index import PowerIndex
 
 
 class PublicGoodIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> List[float]:
+    def compute(self, game: WeightedVotingGame) -> list[float]:
         """
         Returns a list of the public good index for all players in the game.
         The public good index for a player j is defined as:

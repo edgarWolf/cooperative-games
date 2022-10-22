@@ -1,11 +1,10 @@
-from typing import List, Tuple, Dict
 from games.base_game import BaseGame
 from scipy.special import binom
 
 class Game(BaseGame):
     """Represents a class for cooperative games."""
 
-    def __init__(self, num_players: int, contributions: List[int]) -> None:
+    def __init__(self, num_players: int, contributions: list[int]) -> None:
         """Creates a new instance of this class."""
         super().__init__(num_players)
         if len(contributions) != len(self.coalitions):
@@ -20,11 +19,11 @@ class Game(BaseGame):
         self.contributions = contributions
 
 
-    def characteristic_function(self) -> Dict:
+    def characteristic_function(self) -> dict:
         """Returns the characteristic of this TU game."""
         return { coalition : self.contributions[i] for i, coalition in enumerate(self.coalitions) }
 
-    def get_marginal_contribution(self, coalition: Tuple, player: int) -> int:
+    def get_marginal_contribution(self, coalition: tuple, player: int) -> int:
         """Returns the marginal contribution for a player in a coalition."""
         
         # Parameter check
@@ -49,7 +48,7 @@ class Game(BaseGame):
 
         return coalition_payoff - coalition_without_player_payoff
     
-    def get_utopia_payoff_vector(self):
+    def get_utopia_payoff_vector(self) -> list[float]:
         """
         Returns a list of the utopia-payoffs for all players in the game.
         The utopia-payoff M_i of a player i is defined as 
@@ -68,7 +67,7 @@ class Game(BaseGame):
         return M
 
 
-    def get_minimal_rights_vector(self):
+    def get_minimal_rights_vector(self) -> list[float]:
         """
         Returns a list representing the minimal rights vector of the game.
         The minimal rights vector consists of the maximum remainders R(S, i) for a player i in coalition S.
@@ -93,7 +92,7 @@ class Game(BaseGame):
         return R
 
 
-    def __check_if_contributions_are_monotone(self, contributions):
+    def __check_if_contributions_are_monotone(self, contributions) -> bool:
         """
         Checks wheter the contribution vector contains montonely growing contributions.
         We define monotonley growing contributions such that any coalition with size i, has to contribute

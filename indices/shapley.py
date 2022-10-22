@@ -11,7 +11,7 @@ class ShapleyValue(PowerValue):
 
 
 class ShapleyShubikIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame):
+    def compute(self, game: WeightedVotingGame) -> list[float]:
         """
         Returns a list of the shapely-shubik-indices for all players in the game.
         The shapley-shubik-index for a player j is defined as:
