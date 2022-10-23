@@ -21,7 +21,7 @@ class Game(BaseGame):
 
     def characteristic_function(self) -> dict:
         """Returns the characteristic of this TU game."""
-        return { coalition : self.contributions[i] for i, coalition in enumerate(self.coalitions) }
+        return { coalition : contribution for coalition, contribution in zip(self.coalitions, self.contributions) }
 
     def get_marginal_contribution(self, coalition: tuple, player: int) -> int:
         """Returns the marginal contribution for a player in a coalition."""
@@ -62,7 +62,7 @@ class Game(BaseGame):
         M = []
         for player in self.players:
             N_without_i = tuple(sorted(p for p in N if p != player))
-            v_N_without_i = v[tuple(sorted(p for p in N if p != player))] if N_without_i in v else 0
+            v_N_without_i = v[N_without_i] if N_without_i in v else 0
             M.append(v_N - v_N_without_i)
         return M
 
