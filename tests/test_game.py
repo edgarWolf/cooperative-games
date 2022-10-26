@@ -1,5 +1,6 @@
 import pytest
 from games.game import Game
+from indices.shapley import ShapleyValue
 
 def test_constructor():
     """Test the game constructor."""
@@ -213,7 +214,39 @@ def test_get_imputation_vertices():
     assert expected_output == actual_output
 
 
+def test_shapley_value():
 
+    contributions = [2, 4, 5, 18, 14, 9, 24]
+    shapley = ShapleyValue()
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [9.5, 8, 6.5]
+    actual_output = shapley.compute(game)
+    assert expected_output == actual_output
+
+    contributions = [0, 0, 0, 1, 2, 3, 7.5]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [2, 2.5, 3.0]
+    actual_output = shapley.compute(game)
+    assert expected_output == actual_output
+
+    contributions = [120, 60, 40, 30, 120, 120, 120, 60, 60, 40, 120, 120, 120, 60, 120]
+    game = Game(num_players=4, contributions=contributions)
+    expected_output = [80.83333, 20.83333, 10.83333,  7.50000]
+    actual_output = shapley.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [1]
+    actual_output = shapley.compute(game)
+    assert expected_output == actual_output
+
+    contributions = [42]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [42]
+    actual_output = shapley.compute(game)
+    assert expected_output == actual_output
 
 
 
