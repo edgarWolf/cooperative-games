@@ -1,6 +1,7 @@
 import pytest
 from games.game import Game
 from indices.shapley import ShapleyValue
+from indices.banzhaf import BanzhafValue
 
 def test_constructor():
     """Test the game constructor."""
@@ -249,5 +250,40 @@ def test_shapley_value():
     assert expected_output == actual_output
 
 
+def test_banzhaf_value():
 
- 
+    banzhaf = BanzhafValue()
+
+    # Test normalized
+    contributions = [0, 0, 0, 1, 2, 1, 3]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [15/13, 9/13, 15/13]
+    actual_output = banzhaf.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+    # Test absolute.
+    expected_output = [1.25, 0.75, 1.25]
+    actual_output = banzhaf.compute(game, normalized=False)
+    assert expected_output == actual_output
+
+    contributions = [0, 0, 0, 1, 2, 1, 4]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [3/2, 1, 3/2]
+    actual_output = banzhaf.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+    
+    expected_output = [1.5, 1, 1.5]
+    actual_output = banzhaf.compute(game, normalized=False)
+    assert expected_output == actual_output
+
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [1]
+    actual_output = banzhaf.compute(game)
+    assert expected_output == actual_output
+
+    contributions = [42]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [42]
+    actual_output = banzhaf.compute(game)
+    assert expected_output == actual_output

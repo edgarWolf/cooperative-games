@@ -34,10 +34,6 @@ class ShapleyValue(PowerValue):
         return shapley_values
 
         
-
-
-
-
 class ShapleyShubikIndex(PowerIndex):
     def compute(self, game: WeightedVotingGame) -> list[float]:
         """
