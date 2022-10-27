@@ -20,7 +20,7 @@ class BanzhafValue(PowerValue):
         """
         K = self.__K(game) if normalized else 1 / (2**(len(game.players) - 1))
         marg_sums = self.__marginal_contributions_sum(game)
-        return list(map(lambda b: K * b, marg_sums))
+        return [K * b for b in marg_sums]
 
 
     def __K(self, game: Game) -> float:
