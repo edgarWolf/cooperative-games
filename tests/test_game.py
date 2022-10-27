@@ -2,6 +2,7 @@ import pytest
 from games.game import Game
 from indices.shapley import ShapleyValue
 from indices.banzhaf import BanzhafValue
+from indices.gatley import GatelyPoint
 
 def test_constructor():
     """Test the game constructor."""
@@ -286,4 +287,38 @@ def test_banzhaf_value():
     game = Game(num_players=1, contributions=contributions)
     expected_output = [42]
     actual_output = banzhaf.compute(game)
+    assert expected_output == actual_output
+
+
+def test_gately_point():
+    gately = GatelyPoint()
+
+    contributions = [0, 0, 0, 1, 1, 1, 3.5]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [1.166667, 1.166667, 1.166667]
+    actual_output = gately.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+    contributions = [0, 0, 0, 4, 0, 3, 6]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [18/11, 36/11, 12/11]
+    actual_output = gately.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+    contributions = [0, 0, 0, 1170, 770, 210, 1530]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [827.7049, 476.5574, 225.7377]
+    actual_output = gately.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [1]
+    actual_output = gately.compute(game)
+    assert expected_output == actual_output
+
+    contributions = [42]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [42]
+    actual_output = gately.compute(game)
     assert expected_output == actual_output
