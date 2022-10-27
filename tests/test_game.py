@@ -3,6 +3,7 @@ from games.game import Game
 from indices.shapley import ShapleyValue
 from indices.banzhaf import BanzhafValue
 from indices.gatley import GatelyPoint
+from indices.tau import TauValue
 
 def test_constructor():
     """Test the game constructor."""
@@ -321,4 +322,32 @@ def test_gately_point():
     game = Game(num_players=1, contributions=contributions)
     expected_output = [42]
     actual_output = gately.compute(game)
+    assert expected_output == actual_output
+
+
+def test_tau_value():
+    tau = TauValue()
+
+    contributions = [0, 0, 0, 0, 1, 0, 1]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [1/2, 0, 1/2]
+    actual_output = tau.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+    contributions = [2, 4, 5, 18, 14, 9, 24]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [11.5, 7, 5.5]
+    actual_output = tau.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+    contributions = [0, 0, 0, 1, 2, 1, 3]
+    game = Game(num_players=3, contributions=contributions)
+    expected_output = [1.2, 0.6, 1.2]
+    actual_output = tau.compute(game)
+    assert expected_output == pytest.approx(actual_output)
+
+    contributions = [1]
+    game = Game(num_players=1, contributions=contributions)
+    expected_output = [1]
+    actual_output = tau.compute(game)
     assert expected_output == actual_output
