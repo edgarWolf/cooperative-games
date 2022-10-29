@@ -1,5 +1,7 @@
 from games.base_game import BaseGame
 from scipy.special import binom
+from scipy.optimize import linprog
+import numpy as np
 
 class Game(BaseGame):
     """Represents a class for cooperative games."""
@@ -80,25 +82,43 @@ class Game(BaseGame):
         """
         v = self.characteristic_function()
         N = self.coalitions[-1]
+        n = len(self.players)
         v_N = v[N]
-        U_vecs = []
-        for player in self.players:
-            # Get other players than the current player
-            other_players = [j for j in self.players if j != player]
-            # Calculate the maximum payoff the player can get.
-            u_i = v_N - sum(v[(j,)] for j in other_players)
-            # Create the payoff vector
-            U = [-1 for player in self.players]
-            U[player - 1] = u_i
-            # Fill in the other payoffs.
-            for j in other_players:
-                U[j - 1] = v[(j,)]
 
-            # If some vertices overlap, don't add them multiple times.
-            if U not in U_vecs:
-                U_vecs.append(U)
-        return U_vecs
+        if n == 1:
+            return [ [v[(1),]] ]
 
+        # Colaitions and payoffs consisting of more than one player, but no the grand coaliition.
+        coaliiotions_between = list(v.keys())[n:-1]
+        payoffs_between = list(v.values())[n:-1]
+
+        # Coefficients for target function: Maximize only one player at a time (indicated with -1).
+        C = np.diag([-1 for i in range(n)])
+
+        # Equality constraint: sum^n_{i=1} u_i = v[N]
+        A_eq = [[1 for _ in range(n)]]
+        b_eq = [v_N]
+
+        # Maximize constraints. -1, if player contributes, 0 else.
+        A_ub = [[-1 if (i + 1) in C else 0 for i in range(n)] for C in coaliiotions_between]
+        b_ub = [c for c in payoffs_between]
+
+
+        # The lower bounds for the payoffs for the individual players.
+        bounds = [(v[coalition], None) for coalition in self.get_one_coalitions()]
+        
+        # Calculate imputation matrix, i.e.the vertices of the imputation set.
+        X = []
+        for c in C:
+            # TODO: Remove this cast to list, when application is written to use numpy arrays as standard arrays.
+            solution = list( np.round(linprog(c, A_eq=A_eq, b_eq=b_eq, A_ub=A_ub, b_ub=b_ub, bounds=bounds).x).astype(int) )
+
+            # If vector is already in the matrix, don't add it multiple times. 
+            if solution not in X:
+                X.append(solution)
+        return X
+
+        
         
     def get_minimal_rights_vector(self) -> list[float]:
         """
