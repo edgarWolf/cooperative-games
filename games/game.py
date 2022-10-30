@@ -6,14 +6,20 @@ import numpy as np
 class Game(BaseGame):
     """Represents a class for cooperative games."""
 
-    def __init__(self, num_players: int, contributions: list[int]) -> None:
+    def __init__(self, contributions: list[int]) -> None:
         """Creates a new instance of this class."""
-        super().__init__(num_players)
-        if len(contributions) != len(self.coalitions):
-            raise ValueError("Vector of contributions does not match length of coalition vector.")
+        super().__init__(contributions)
 
         if any(contribution for contribution in contributions if contribution < 0):
             raise ValueError("Contributions have to be greater than or equal to 0.")
+
+        num_players = np.log2(len(contributions) + 1)
+        if not num_players.is_integer():
+            raise ValueError("Invalid length of the contributions vector.")
+        num_players = int(num_players)
+        
+        self._players = [i for i in range(1, num_players + 1)]
+        self._coalitions = self._init_coalitions() 
 
         if not self.__check_if_contributions_are_monotone(contributions):
             raise ValueError("Contributions have to grow monotone by coalition size.")

@@ -5,13 +5,13 @@ class BaseGame(ABC):
     """
     Represents a base class for games in context of game theory.
     """
-    def __init__(self, num_players: int) -> None:
+    def __init__(self, contributions: list[int]) -> None:
         """Base constructor for all derived classes."""
-        if num_players < 1:
-            raise ValueError("The number of players has to be greater than or equal to 1.")
-        self._players = [i for i in range(1, num_players + 1)]
-        self._coalitions = self.__init_coalitions()
+        if not contributions:
+            raise ValueError("No contributions provided.")
 
+        self._players = []
+        self._coalitions = []
 
     @property
     def players(self) -> list[int]:
@@ -28,7 +28,7 @@ class BaseGame(ABC):
         """Returns the characteristic function of the game."""
         return
 
-    def __init_coalitions(self) -> list[tuple]:
+    def _init_coalitions(self) -> list[tuple]:
         """Returns all possible coalitions based on the player vector of the current game."""
         powerset = self.__powerset(self.players)
         return powerset

@@ -4,24 +4,26 @@ class WeightedVotingGame(BaseGame):
     """
     Represents the class of weighted voting games. Each coalition with a sum of weights greater than or equal to the quorum are considered winning coalitions, losing otherwise.
     """
-    def __init__(self, num_players: int, weights: list[int], quorum : int) -> None:
+    def __init__(self, contributions: list[int], quorum : int) -> None:
         """Creates a new instance of this class."""
-        super().__init__(num_players)
+        super().__init__(contributions)
+
+        num_players = len(contributions)
+        self._players = [i for i in range(1, num_players + 1)]
+        self._coalitions = self._init_coalitions()
 
         # Parameter check.
-        if len(weights) != num_players:
-            raise ValueError("Length of player vector and weight vector don't match.")
-        if any(weight  for weight  in weights  if weight  < 0):
+        if any(weight  for weight  in contributions  if weight  < 0):
             raise ValueError("Weight vector containns nonallowed negative weights.")
         if quorum < 0:
             raise ValueError("Qurom is only allowed to be greater than 0.")
 
-        self.weigths = weights
+        self.contributions = contributions
         self.quorum = quorum
 
     def characteristic_function(self) -> dict[tuple, int]:
         """Returns the characteristic function of this weighted voting game."""
-        return { coalition :  1 if sum(self.weigths[player - 1] for player in coalition) >= self.quorum else 0 for coalition in self.coalitions }
+        return { coalition :  1 if sum(self.contributions[player - 1] for player in coalition) >= self.quorum else 0 for coalition in self.coalitions }
 
     def get_minimal_winning_coalitions(self) -> list[tuple]:
         """Returns a list of the minimal winning coalitions."""
@@ -31,7 +33,7 @@ class WeightedVotingGame(BaseGame):
 
     def get_winning_coalitions(self) -> list[tuple]:
         """Returns a list containing winning coalitions, i.e all coalitions with a sum of weights >= the quorum."""
-        return [coalition for coalition in self.coalitions if sum(self.weigths[player - 1] for player in coalition) >= self.quorum]
+        return [coalition for coalition in self.coalitions if sum(self.contributions[player - 1] for player in coalition) >= self.quorum]
 
     def get_shift_winning_coalitions(self) -> list[tuple]:
         """
@@ -113,9 +115,9 @@ class WeightedVotingGame(BaseGame):
         # Since every winning coalition with j is also a winning with i, but there is no coalition,
         # such that this coalition is winning with i but not with j, we can use the weight to indicate a more sensitive preferation.
         if prefer_by_weight and condition_one_met and not condition_two_met:
-            if self.weigths[i - 1] > self.weigths[j - 1]:
+            if self.contributions[i - 1] > self.contributions[j - 1]:
                 return i
-            elif self.weigths[j - 1] > self.weigths[i -1]:
+            elif self.contributions[j - 1] > self.contributions[i -1]:
                 return j
             return None
 
@@ -145,10 +147,10 @@ class WeightedVotingGame(BaseGame):
 
         if all_coalitions:
             return { coalition : 
-                                [player for player in coalition if  ( sum(self.weigths[winning_player - 1] for winning_player in coalition) - self.weigths[player - 1] ) < self.quorum and coalition in winning_coalitions ] 
+                                [player for player in coalition if  ( sum(self.contributions[winning_player - 1] for winning_player in coalition) - self.contributions[player - 1] ) < self.quorum and coalition in winning_coalitions ] 
                                 for coalition in self.coalitions }
         else:
             return { winning_coaliton : 
-                    [player for player in winning_coaliton if  ( sum(self.weigths[winning_player - 1] for winning_player in winning_coaliton) - self.weigths[player - 1] ) < self.quorum ] 
+                    [player for player in winning_coaliton if  ( sum(self.contributions[winning_player - 1] for winning_player in winning_coaliton) - self.contributions[player - 1] ) < self.quorum ] 
                     for winning_coaliton in winning_coalitions }
             
