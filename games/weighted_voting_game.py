@@ -18,7 +18,7 @@ class WeightedVotingGame(BaseGame):
         if quorum < 0:
             raise ValueError("Qurom is only allowed to be greater than 0.")
 
-        self.contributions = contributions
+        self._contributions = contributions
         self.quorum = quorum
 
     def characteristic_function(self) -> dict[tuple, int]:

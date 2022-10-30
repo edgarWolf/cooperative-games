@@ -12,6 +12,7 @@ class BaseGame(ABC):
 
         self._players = []
         self._coalitions = []
+        self._contributions = []
 
     @property
     def players(self) -> list[int]:
@@ -22,6 +23,11 @@ class BaseGame(ABC):
     def coalitions(self) -> list[tuple]:
         """Property for coalitions field."""
         return self._coalitions
+
+    @property
+    def contributions(self) -> list[int]:
+        """Property for contributions field."""
+        return self._contributions
 
     @abstractmethod
     def characteristic_function(self) -> dict[tuple, int]:

@@ -24,7 +24,7 @@ class Game(BaseGame):
         if not self.__check_if_contributions_are_monotone(contributions):
             raise ValueError("Contributions have to grow monotone by coalition size.")
 
-        self.contributions = contributions
+        self._contributions = contributions
 
 
     def characteristic_function(self) -> dict:
