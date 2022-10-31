@@ -105,19 +105,16 @@ class Game(BaseGame):
         A_eq = [[1 for _ in range(n)]]
         b_eq = [v_N]
 
-        # Maximize constraints. -1, if player contributes, 0 else.
-        A_ub = [[-1 if (i + 1) in C else 0 for i in range(n)] for C in coaliiotions_between]
-        b_ub = [c for c in payoffs_between]
+        # The bounds for the payoffs for the individual players.
+        lower_bounds = [v[coalition] for coalition in self.get_one_coalitions()]
+        upper_bounds = [v[N] - sum(lb for j, lb in enumerate(lower_bounds) if j != i) for i, _ in enumerate(lower_bounds)]
+        bounds = [(lb, ub) for lb, ub in zip(lower_bounds, upper_bounds)]
 
-
-        # The lower bounds for the payoffs for the individual players.
-        bounds = [(v[coalition], None) for coalition in self.get_one_coalitions()]
-        
         # Calculate imputation matrix, i.e.the vertices of the imputation set.
         X = []
         for c in C:
             # TODO: Remove this cast to list, when application is written to use numpy arrays as standard arrays.
-            solution = list( np.round(linprog(c, A_eq=A_eq, b_eq=b_eq, A_ub=A_ub, b_ub=b_ub, bounds=bounds).x).astype(int) )
+            solution = list( np.round(linprog(c, A_eq=A_eq, b_eq=b_eq, bounds=bounds).x).astype(int) )
 
             # If vector is already in the matrix, don't add it multiple times. 
             if solution not in X:
