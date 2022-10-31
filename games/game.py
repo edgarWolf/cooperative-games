@@ -1,3 +1,4 @@
+import enum
 from games.base_game import BaseGame
 from scipy.special import binom
 from scipy.optimize import linprog
@@ -89,37 +90,23 @@ class Game(BaseGame):
         v = self.characteristic_function()
         N = self.coalitions[-1]
         n = len(self.players)
-        v_N = v[N]
 
         if n == 1:
             return [ [v[(1),]] ]
-
-        # Colaitions and payoffs consisting of more than one player, but no the grand coaliition.
-        coaliiotions_between = list(v.keys())[n:-1]
-        payoffs_between = list(v.values())[n:-1]
-
-        # Coefficients for target function: Maximize only one player at a time (indicated with -1).
-        C = np.diag([-1 for i in range(n)])
-
-        # Equality constraint: sum^n_{i=1} u_i = v[N]
-        A_eq = [[1 for _ in range(n)]]
-        b_eq = [v_N]
 
         # The bounds for the payoffs for the individual players.
         lower_bounds = [v[coalition] for coalition in self.get_one_coalitions()]
         upper_bounds = [v[N] - sum(lb for j, lb in enumerate(lower_bounds) if j != i) for i, _ in enumerate(lower_bounds)]
         bounds = [(lb, ub) for lb, ub in zip(lower_bounds, upper_bounds)]
 
-        # Calculate imputation matrix, i.e.the vertices of the imputation set.
+        # Calculate the impuation vertices, based on the indivdual payoffs and the efficiency constraint.
         X = []
-        for c in C:
-            # TODO: Remove this cast to list, when application is written to use numpy arrays as standard arrays.
-            solution = list( np.round(linprog(c, A_eq=A_eq, b_eq=b_eq, bounds=bounds).x).astype(int) )
-
-            # If vector is already in the matrix, don't add it multiple times. 
-            if solution not in X:
-                X.append(solution)
+        for i, _ in enumerate(bounds):
+            x = [bound[1] if i == j else bound[0] for j, bound in enumerate(bounds)]
+            if x not in X:
+                X.append(x)
         return X
+
 
         
         
