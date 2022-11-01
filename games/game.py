@@ -165,14 +165,3 @@ class Game(BaseGame):
             max_contribs.append(max_contrib)
             start_idx = end_idx
         return contribs_monotone
-
-
-
-
-
-
-
-
-
-
-
