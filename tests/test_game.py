@@ -1,9 +1,6 @@
 import pytest
 from games.game import Game
-from indices.shapley import ShapleyValue
-from indices.banzhaf import BanzhafValue
-from indices.gatley import GatelyPoint
-from indices.tau import TauValue
+from indices.power_values import *
 
 def test_constructor():
     """Test the game constructor."""

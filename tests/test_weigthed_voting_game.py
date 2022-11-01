@@ -1,11 +1,6 @@
 import pytest
 from games.weighted_voting_game import WeightedVotingGame
-from indices.banzhaf import BanzhafIndex
-from indices.johnston import JohnstonIndex
-from indices.pgi import PublicGoodIndex
-from indices.phi import PublicHelpIndex
-from indices.shapley import ShapleyShubikIndex
-from indices.shift import ShiftIndex
+from indices.power_indices import *
 
 
 def test_constructor():
