@@ -76,6 +76,17 @@ class BanzhafValue(PowerValue):
         return marg_sums
 
 class GatelyPoint(PowerValue):
+    """
+    Returns a list of the gately points for all players in the game.
+    The gately point for a player i is defined as:
+    v_i + (v(N) - sum^n_{j=1} v_j) * (M_i - v_i) / (sum^n_{j=1}M_j - sum^n_{j=1} v_j), where 
+        - N denotes the grand coalition.
+        - n denotes the number of players in the game.
+        - v denotes the characteristic function of the game.
+        - M denotes the utopia payoff vector.
+    The Gately-point can be interpretated as the intersection of the imputationn set with the line constructed by
+    the payoffs of the one-coalitions and the utopia-payoff-vector.
+    """
     def compute(self, game: Game) -> list[float]:
         v = game.characteristic_function()
         N = game.coalitions[-1]
@@ -98,6 +109,18 @@ class GatelyPoint(PowerValue):
 
     
 class TauValue(PowerValue):
+    """
+    Returns a list of the tau Values for all players in the game.
+    The tau value for a player i is defined as:
+    tau_i =  alpha * m_i + (1 - alpha) * M_i, where 
+        - m denotes the minimal rights vector.
+        - M denotes the utopia payoff vector.
+        - alpha defines a value in [0, 1].
+    The value of alpha is explicit defined by the constraint
+    sum^n_{j=1} tau_j = v(N)
+    The tau-value can be interpretated as the intersection of the imputationn set with the line constructed by
+    the minimal-rights-vector and the utopia-payoff-vector.
+    """
     def compute(self, game: Game) -> list[float]:
         v = game.characteristic_function()
 
