@@ -2,13 +2,14 @@ import enum
 from games.base_game import BaseGame
 from scipy.special import binom
 from scipy.optimize import linprog
+from typing import List, Dict, Tuple
 import numpy as np
 
 
 class Game(BaseGame):
     """Represents a class for cooperative games."""
 
-    def __init__(self, contributions: list[int]) -> None:
+    def __init__(self, contributions: List[int]) -> None:
         """Creates a new instance of this class."""
         super().__init__(contributions)
 
@@ -28,11 +29,11 @@ class Game(BaseGame):
 
         self._contributions = contributions
 
-    def characteristic_function(self) -> dict:
+    def characteristic_function(self) -> Dict:
         """Returns the characteristic of this TU game."""
         return {coalition: contribution for coalition, contribution in zip(self.coalitions, self.contributions)}
 
-    def get_marginal_contribution(self, coalition: tuple, player: int) -> int:
+    def get_marginal_contribution(self, coalition: Tuple, player: int) -> int:
         """Returns the marginal contribution for a player in a coalition."""
 
         # Parameter check
@@ -57,7 +58,7 @@ class Game(BaseGame):
 
         return coalition_payoff - coalition_without_player_payoff
 
-    def get_utopia_payoff_vector(self) -> list[float]:
+    def get_utopia_payoff_vector(self) -> List[float]:
         """
         Returns a list of the utopia-payoffs for all players in the game.
         The utopia-payoff M_i of a player i is defined as 
@@ -75,7 +76,7 @@ class Game(BaseGame):
             M.append(v_N - v_N_without_i)
         return M
 
-    def get_imputation_vertices(self) -> list[list[float]]:
+    def get_imputation_vertices(self) -> List[List[float]]:
         """
         Returns a matrix representing the imputation vertices of the game.
         On a input of a n-player game, a n x n matrix is being returned, each row representing a vertex of a imputation.
@@ -146,7 +147,7 @@ class Game(BaseGame):
             [np.round(linprog(c, A_eq=A_eq, b_eq=b_eq, A_ub=A_ub, b_ub=b_ub, bounds=bounds).x).astype(int) for c in C],
             axis=0)
 
-    def _get_maximization_coefficients(self, bounds: list[tuple]) -> np.ndarray:
+    def _get_maximization_coefficients(self, bounds: List[Tuple]) -> np.ndarray:
         v = self.characteristic_function()
         N = self.coalitions[-1]
         C = np.diag([-1 for _ in range(len(bounds))])
@@ -177,7 +178,7 @@ class Game(BaseGame):
 
         return np.array(C_res)
 
-    def get_minimal_rights_vector(self) -> list[float]:
+    def get_minimal_rights_vector(self) -> List[float]:
         """
         Returns a list representing the minimal rights vector of the game.
         The minimal rights vector consists of the maximum remainders R(S, i) for a player i in coalition S.
@@ -201,7 +202,7 @@ class Game(BaseGame):
             R.append(max(R_S))
         return R
 
-    def __check_if_contributions_are_monotone(self, contributions) -> bool:
+    def __check_if_contributions_are_monotone(self, contributions: List[int]) -> bool:
         """
         Checks wheter the contribution vector contains montonely growing contributions.
         We define monotonley growing contributions such that any coalition with size i, has to contribute

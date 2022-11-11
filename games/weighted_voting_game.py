@@ -1,4 +1,5 @@
 from games.base_game import BaseGame
+from typing import List, Dict, Tuple, Optional
 
 
 class WeightedVotingGame(BaseGame):
@@ -6,7 +7,7 @@ class WeightedVotingGame(BaseGame):
     Represents the class of weighted voting games. Each coalition with a sum of weights greater than or equal to the quorum are considered winning coalitions, losing otherwise.
     """
 
-    def __init__(self, contributions: list[int], quorum: int) -> None:
+    def __init__(self, contributions: List[int], quorum: int) -> None:
         """Creates a new instance of this class."""
         super().__init__(contributions)
 
@@ -23,23 +24,23 @@ class WeightedVotingGame(BaseGame):
         self._contributions = contributions
         self.quorum = quorum
 
-    def characteristic_function(self) -> dict[tuple, int]:
+    def characteristic_function(self) -> Dict[Tuple, int]:
         """Returns the characteristic function of this weighted voting game."""
         return {coalition: 1 if sum(self.contributions[player - 1] for player in coalition) >= self.quorum else 0 for
                 coalition in self.coalitions}
 
-    def get_minimal_winning_coalitions(self) -> list[tuple]:
+    def get_minimal_winning_coalitions(self) -> List[Tuple]:
         """Returns a list of the minimal winning coalitions."""
         critical_coalitions = self.get_pivot_players()
         return [coalition for coalition, critical_players in critical_coalitions.items() if
                 coalition == tuple(critical_players)]
 
-    def get_winning_coalitions(self) -> list[tuple]:
+    def get_winning_coalitions(self) -> List[Tuple]:
         """Returns a list containing winning coalitions, i.e all coalitions with a sum of weights >= the quorum."""
         return [coalition for coalition in self.coalitions if
                 sum(self.contributions[player - 1] for player in coalition) >= self.quorum]
 
-    def get_shift_winning_coalitions(self) -> list[tuple]:
+    def get_shift_winning_coalitions(self) -> List[Tuple]:
         """
         Returns a list containing all shift-minimal coalitions. 
         A minimal winning coalition S in W_m is called shift-minimal, if it holds, that
@@ -74,7 +75,7 @@ class WeightedVotingGame(BaseGame):
 
         return shift_minimal_winning_coalitions
 
-    def preferred_player(self, i: int, j: int, prefer_by_weight: bool = True) -> int | None:
+    def preferred_player(self, i: int, j: int, prefer_by_weight: bool = True) -> Optional[int]:
         """
         Returns the preferred player between the two players passed as parameters.
         The function is commutative, such that on input (i,j) returns i if i > j, and accordingly j on input(j,i) if j > i.
@@ -132,11 +133,11 @@ class WeightedVotingGame(BaseGame):
         # No preference.
         return None
 
-    def get_player_ranking(self) -> dict[tuple, int | None]:
+    def get_player_ranking(self) -> Dict[Tuple, Optional[int]]:
         """Returns a ranking on the players in the game."""
         return {(i, j): self.preferred_player(i, j) for i in self.players for j in self.players[i:]}
 
-    def get_pivot_players(self, all_coalitions=False) -> dict[tuple, list]:
+    def get_pivot_players(self, all_coalitions=False) -> Dict[Tuple, List]:
         """
         Returns a list with all critical players with respect to every winning coalition. 
         A player p is considered as pivot player in a winning coalition C if C becomes a losing coalition if p leaves C.

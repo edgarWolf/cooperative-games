@@ -1,18 +1,19 @@
 from abc import ABC, abstractmethod
 from games.game import Game
 from numbers import Real
+from typing import List
 import math
 import numpy as np
 
 
 class PowerValue(ABC):
     @abstractmethod
-    def compute(self, game: Game) -> list[float]:
+    def compute(self, game: Game) -> List[float]:
         pass
 
 
 class ShapleyValue(PowerValue):
-    def compute(self, game: Game) -> list[float]:
+    def compute(self, game: Game) -> List[float]:
         """
         Returns a list of the shapley values for all players in the game.
         The shapley value for a player j is defined as:
@@ -42,7 +43,7 @@ class ShapleyValue(PowerValue):
 
 
 class BanzhafValue(PowerValue):
-    def compute(self, game: Game, normalized=True) -> list[float]:
+    def compute(self, game: Game, normalized: bool = True) -> List[float]:
         """
         Returns a list of the banzhaf-values for all players in the game.
         The banzhaf-value can be defined as an absolute value, and a relative value.
@@ -66,7 +67,7 @@ class BanzhafValue(PowerValue):
         marg_sums = self.__marginal_contributions_sum(game)
         return v[N] / sum(marg_sums)
 
-    def __marginal_contributions_sum(self, game: Game) -> list[Real]:
+    def __marginal_contributions_sum(self, game: Game) -> List[Real]:
         """Returns a list of the sum of marginal contributions for each player in the game."""
         v = game.characteristic_function()
         marg_sums = []
@@ -90,7 +91,7 @@ class GatelyPoint(PowerValue):
     the payoffs of the one-coalitions and the utopia-payoff-vector.
     """
 
-    def compute(self, game: Game) -> list[float]:
+    def compute(self, game: Game) -> List[float]:
         v = game.characteristic_function()
         N = game.coalitions[-1]
         M = game.get_utopia_payoff_vector()
@@ -125,7 +126,7 @@ class TauValue(PowerValue):
     the minimal-rights-vector and the utopia-payoff-vector.
     """
 
-    def compute(self, game: Game) -> list[float]:
+    def compute(self, game: Game) -> List[float]:
         v = game.characteristic_function()
 
         # Edge case 1 player.

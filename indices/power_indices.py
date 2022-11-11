@@ -1,16 +1,17 @@
 from abc import ABC, abstractmethod
 import math
+from typing import List
 from games.weighted_voting_game import WeightedVotingGame
 
 
 class PowerIndex(ABC):
     @abstractmethod
-    def compute(self, game: WeightedVotingGame) -> list[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         pass
 
 
 class ShapleyShubikIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> list[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the shapley-shubik-indices for all players in the game.
         The shapley-shubik-index for a player j is defined as:
@@ -46,7 +47,7 @@ class ShapleyShubikIndex(PowerIndex):
 
 
 class BanzhafIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> list[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the banzhaf-indices for all players in the game.
         The banzhaf-index for a player j is defined as:
@@ -76,7 +77,7 @@ class BanzhafIndex(PowerIndex):
 
 
 class ShiftIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> list[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the shift-indices for all players in the game.
         The shift-index for a player j is defined as:
@@ -94,7 +95,7 @@ class ShiftIndex(PowerIndex):
 
 
 class PublicGoodIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> list[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the public good index for all players in the game.
         The public good index for a player j is defined as:
@@ -112,7 +113,7 @@ class PublicGoodIndex(PowerIndex):
 
 
 class PublicHelpIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> list[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the public help index for all players in the game.
         The public help index for a player j is defined as:
@@ -130,7 +131,7 @@ class PublicHelpIndex(PowerIndex):
 
 
 class JohnstonIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame) -> list[float]:
+    def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the johnston-indices for all players in the game.
         The johnston-index for a player j is defined as:
