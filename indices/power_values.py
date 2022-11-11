@@ -4,10 +4,12 @@ from numbers import Real
 import math
 import numpy as np
 
+
 class PowerValue(ABC):
     @abstractmethod
     def compute(self, game: Game) -> list[float]:
         pass
+
 
 class ShapleyValue(PowerValue):
     def compute(self, game: Game) -> list[float]:
@@ -33,7 +35,7 @@ class ShapleyValue(PowerValue):
                 C_len = len(C)
                 C_len_factorial = math.factorial(C_len)
                 complement_factorial = math.factorial(n - C_len - 1)
-                pivot_term = v[tuple( sorted( C + (player,) ) )] - v[C]
+                pivot_term = v[tuple(sorted(C + (player,)))] - v[C]
                 shapley_value += C_len_factorial * complement_factorial * pivot_term
             shapley_values.append(shapley_value / factorial_n)
         return shapley_values
@@ -53,10 +55,9 @@ class BanzhafValue(PowerValue):
         K sum_{C subseteq N, j not in C} (v(C union {j}) - v(C)), where
             - K = v(N) / sum^n_{j=1} sum_{C subseteq N, j not in C} (v(C union {j}) - v(C)).
         """
-        K = self.__K(game) if normalized else 1 / (2**(len(game.players) - 1))
+        K = self.__K(game) if normalized else 1 / (2 ** (len(game.players) - 1))
         marg_sums = self.__marginal_contributions_sum(game)
         return [K * b for b in marg_sums]
-
 
     def __K(self, game: Game) -> float:
         """Returns the coeffient for the absolute banzhaf value."""
@@ -64,16 +65,17 @@ class BanzhafValue(PowerValue):
         v = game.characteristic_function()
         marg_sums = self.__marginal_contributions_sum(game)
         return v[N] / sum(marg_sums)
-    
+
     def __marginal_contributions_sum(self, game: Game) -> list[Real]:
         """Returns a list of the sum of marginal contributions for each player in the game."""
         v = game.characteristic_function()
         marg_sums = []
         for player in game.players:
             coalitions_without_player = [coalition for coalition in game.coalitions if player not in coalition]
-            marg_sum = v[(player,)] + sum( v[tuple(sorted(C + (player,)))] - v[C] for C in coalitions_without_player )
+            marg_sum = v[(player,)] + sum(v[tuple(sorted(C + (player,)))] - v[C] for C in coalitions_without_player)
             marg_sums.append(marg_sum)
         return marg_sums
+
 
 class GatelyPoint(PowerValue):
     """
@@ -87,6 +89,7 @@ class GatelyPoint(PowerValue):
     The Gately-point can be interpretated as the intersection of the imputationn set with the line constructed by
     the payoffs of the one-coalitions and the utopia-payoff-vector.
     """
+
     def compute(self, game: Game) -> list[float]:
         v = game.characteristic_function()
         N = game.coalitions[-1]
@@ -107,7 +110,7 @@ class GatelyPoint(PowerValue):
             X.append(x_i)
         return X
 
-    
+
 class TauValue(PowerValue):
     """
     Returns a list of the tau Values for all players in the game.
@@ -121,6 +124,7 @@ class TauValue(PowerValue):
     The tau-value can be interpretated as the intersection of the imputationn set with the line constructed by
     the minimal-rights-vector and the utopia-payoff-vector.
     """
+
     def compute(self, game: Game) -> list[float]:
         v = game.characteristic_function()
 
@@ -144,16 +148,13 @@ class TauValue(PowerValue):
         elif sum_M == 0:
             M_diff = sum_m
             constant_diff = v[N]
-        T = []
 
         # Solve linear equation, to find alpha
         coeffs = np.array([[M_diff]])
         constant = np.array([constant_diff])
         alpha = np.linalg.solve(coeffs, constant)[0]
-        
+
         # Compute and return tau vector.
-        for m_i, M_i in zip(m, M):
-            t = m_i + alpha * (M_i - m_i)
-            T.append(t)
-            
-        return T
+        return [m_i + alpha * (M_i - m_i) for m_i, M_i in zip(m, M)]
+
+

@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from games.game import Game
 from indices.power_values import *
@@ -213,6 +214,37 @@ def test_get_imputation_vertices():
     ]
     actual_output = game.get_imputation_vertices()
     assert expected_output == actual_output
+
+
+def test_get_core_vertices():
+    contributions = [2, 4, 5, 18, 14, 9, 24]
+    game = Game(contributions=contributions)
+    expected_output = np.array([
+       np.array([8, 10,  6]),
+       np.array([9, 10,  5]),
+       np.array([14,  4,  6]),
+       np.array([15,  4,  5]),
+    ])
+    actual_output = game.get_core_vertices()
+    assert np.array_equal(expected_output, actual_output)
+
+    contributions = [0, 1, 2, 3, 4, 5, 6]
+    game = Game(contributions=contributions)
+    expected_output = np.array([
+        np.array([1, 2, 3]),
+    ])
+    actual_output = game.get_core_vertices()
+    assert np.array_equal(expected_output, actual_output)
+
+    contributions = [0, 0, 0, 60, 80,  100, 135]
+    game = Game(contributions=contributions)
+    expected_output = np.array([
+        np.array([5, 55, 75]),
+        np.array([35, 25, 75]),
+        np.array([35, 55, 45]),
+    ])
+    actual_output = game.get_core_vertices()
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_shapley_value():

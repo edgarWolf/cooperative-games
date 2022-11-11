@@ -1,10 +1,12 @@
 from games.base_game import BaseGame
 
+
 class WeightedVotingGame(BaseGame):
     """
     Represents the class of weighted voting games. Each coalition with a sum of weights greater than or equal to the quorum are considered winning coalitions, losing otherwise.
     """
-    def __init__(self, contributions: list[int], quorum : int) -> None:
+
+    def __init__(self, contributions: list[int], quorum: int) -> None:
         """Creates a new instance of this class."""
         super().__init__(contributions)
 
@@ -13,7 +15,7 @@ class WeightedVotingGame(BaseGame):
         self._coalitions = self._init_coalitions()
 
         # Parameter check.
-        if any(weight  for weight  in contributions  if weight  < 0):
+        if any(weight for weight in contributions if weight < 0):
             raise ValueError("Weight vector containns nonallowed negative weights.")
         if quorum < 0:
             raise ValueError("Qurom is only allowed to be greater than 0.")
@@ -23,17 +25,19 @@ class WeightedVotingGame(BaseGame):
 
     def characteristic_function(self) -> dict[tuple, int]:
         """Returns the characteristic function of this weighted voting game."""
-        return { coalition :  1 if sum(self.contributions[player - 1] for player in coalition) >= self.quorum else 0 for coalition in self.coalitions }
+        return {coalition: 1 if sum(self.contributions[player - 1] for player in coalition) >= self.quorum else 0 for
+                coalition in self.coalitions}
 
     def get_minimal_winning_coalitions(self) -> list[tuple]:
         """Returns a list of the minimal winning coalitions."""
         critical_coalitions = self.get_pivot_players()
-        return [coalition for coalition, critical_players in critical_coalitions.items() if coalition == tuple(critical_players)]
-
+        return [coalition for coalition, critical_players in critical_coalitions.items() if
+                coalition == tuple(critical_players)]
 
     def get_winning_coalitions(self) -> list[tuple]:
         """Returns a list containing winning coalitions, i.e all coalitions with a sum of weights >= the quorum."""
-        return [coalition for coalition in self.coalitions if sum(self.contributions[player - 1] for player in coalition) >= self.quorum]
+        return [coalition for coalition in self.coalitions if
+                sum(self.contributions[player - 1] for player in coalition) >= self.quorum]
 
     def get_shift_winning_coalitions(self) -> list[tuple]:
         """
@@ -45,16 +49,17 @@ class WeightedVotingGame(BaseGame):
         """
 
         W_m = self.get_minimal_winning_coalitions()
-        shift_minmimal_winning_coalitions = []
+        shift_minimal_winning_coalitions = []
         unique_pivot_players = set(sum(W_m, ()))
         for S in W_m:
             is_condition_met = True
             for i in S:
-                players_not_in_S = [player for player in unique_pivot_players if player not in S and self.preferred_player(i, player) == i] 
-                
+                players_not_in_S = [player for player in unique_pivot_players if
+                                    player not in S and self.preferred_player(i, player) == i]
+
                 for j in players_not_in_S:
                     S_without_i = tuple(p for p in S if p != i)
-                    S_without_i_union_j = tuple(sorted( S_without_i + (j,) ))
+                    S_without_i_union_j = tuple(sorted(S_without_i + (j,)))
                     # Found a minimal winning coalition by shifting with a less desirable player --> Not shift minimal.
                     if S_without_i_union_j in W_m:
                         is_condition_met = False
@@ -63,13 +68,13 @@ class WeightedVotingGame(BaseGame):
                 # Break out of outer loop
                 if not is_condition_met:
                     break
-            
+
             if is_condition_met:
-                shift_minmimal_winning_coalitions.append(S)
+                shift_minimal_winning_coalitions.append(S)
 
-        return shift_minmimal_winning_coalitions
+        return shift_minimal_winning_coalitions
 
-    def preferred_player(self, i: int, j: int, prefer_by_weight: bool = True) -> int:
+    def preferred_player(self, i: int, j: int, prefer_by_weight: bool = True) -> int | None:
         """
         Returns the preferred player between the two players passed as parameters.
         The function is commutative, such that on input (i,j) returns i if i > j, and accordingly j on input(j,i) if j > i.
@@ -84,9 +89,9 @@ class WeightedVotingGame(BaseGame):
         """
         if i not in self.players or j not in self.players:
             raise ValueError("Specified players are note part of the game.")
-        
+
         coalitions = self.coalitions[:-1]
-        condition_one_met = True 
+        condition_one_met = True
         condition_two_met = False
         winning_coalitions = self.get_winning_coalitions()
 
@@ -98,18 +103,17 @@ class WeightedVotingGame(BaseGame):
             if s_union_j in winning_coalitions and s_union_i not in winning_coalitions:
                 condition_one_met = False
                 break
-        
+
         # Condition 2:
         for t in S:
             t_union_j = tuple(sorted(t + (j,)))
             t_union_i = tuple(sorted(t + (i,)))
             if t_union_j not in winning_coalitions and t_union_i in winning_coalitions:
                 condition_two_met = True
-        
+
         # Both conditions satisfied.
         if condition_one_met and condition_two_met:
             return i
-        
 
         # Prefer a player by weight if condition 1 is met, but condition 2 not.
         # Since every winning coalition with j is also a winning with i, but there is no coalition,
@@ -117,26 +121,20 @@ class WeightedVotingGame(BaseGame):
         if prefer_by_weight and condition_one_met and not condition_two_met:
             if self.contributions[i - 1] > self.contributions[j - 1]:
                 return i
-            elif self.contributions[j - 1] > self.contributions[i -1]:
+            elif self.contributions[j - 1] > self.contributions[i - 1]:
                 return j
             return None
 
-        # Neither of the conditions satiesfied, so player j is actually preferred.
+        # Neither of the conditions satisfied, so player j is actually preferred.
         if not condition_one_met and not condition_two_met:
             return j
 
         # No preference.
         return None
 
-    def get_player_ranking(self) -> list[int]:
+    def get_player_ranking(self) -> dict[tuple, int | None]:
         """Returns a ranking on the players in the game."""
-        preferations = {}
-        for i in self.players:
-            for j in self.players[i:]:
-                preferred_player = self.preferred_player(i, j)
-                preferations[(i, j)] = preferred_player
-        return preferations
-
+        return {(i, j): self.preferred_player(i, j) for i in self.players for j in self.players[i:]}
 
     def get_pivot_players(self, all_coalitions=False) -> dict[tuple, list]:
         """
@@ -146,11 +144,14 @@ class WeightedVotingGame(BaseGame):
         winning_coalitions = self.get_winning_coalitions()
 
         if all_coalitions:
-            return { coalition : 
-                                [player for player in coalition if  ( sum(self.contributions[winning_player - 1] for winning_player in coalition) - self.contributions[player - 1] ) < self.quorum and coalition in winning_coalitions ] 
-                                for coalition in self.coalitions }
+            return {coalition:
+                        [player for player in coalition if (
+                                    sum(self.contributions[winning_player - 1] for winning_player in coalition) -
+                                    self.contributions[player - 1]) < self.quorum and coalition in winning_coalitions]
+                    for coalition in self.coalitions}
         else:
-            return { winning_coaliton : 
-                    [player for player in winning_coaliton if  ( sum(self.contributions[winning_player - 1] for winning_player in winning_coaliton) - self.contributions[player - 1] ) < self.quorum ] 
-                    for winning_coaliton in winning_coalitions }
-            
+            return {winning_coalition:
+                        [player for player in winning_coalition if (
+                                    sum(self.contributions[winning_player - 1] for winning_player in winning_coalition) -
+                                    self.contributions[player - 1]) < self.quorum]
+                    for winning_coalition in winning_coalitions}

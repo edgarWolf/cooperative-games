@@ -2,10 +2,12 @@ from abc import ABC, abstractmethod
 import math
 from games.weighted_voting_game import WeightedVotingGame
 
+
 class PowerIndex(ABC):
     @abstractmethod
     def compute(self, game: WeightedVotingGame) -> list[float]:
-        return
+        pass
+
 
 class ShapleyShubikIndex(PowerIndex):
     def compute(self, game: WeightedVotingGame) -> list[float]:
@@ -37,10 +39,11 @@ class ShapleyShubikIndex(PowerIndex):
                 C_len_factorial = math.factorial(C_len)
                 complement_factorial = math.factorial(n - C_len - 1)
                 # Create a sorted tuple out of the union with the current player, since the key tuples of the characterstic function are sensitive to order.
-                pivot_term = v[tuple( sorted( C + (player,) ) )] - v[C]
+                pivot_term = v[tuple(sorted(C + (player,)))] - v[C]
                 shapley_shubik_index += C_len_factorial * complement_factorial * pivot_term
             shapley_shubik_indices.append(shapley_shubik_index / factorial_n)
         return shapley_shubik_indices
+
 
 class BanzhafIndex(PowerIndex):
     def compute(self, game: WeightedVotingGame) -> list[float]:
@@ -64,12 +67,13 @@ class BanzhafIndex(PowerIndex):
 
         for player in game.players:
             coalitions_without_player = [coalition for coalition in game.coalitions if player not in coalition]
-            banzhaf_index = sum( v[tuple( sorted( C + (player,) ) )] - v[C] for C in coalitions_without_player )
+            banzhaf_index = sum(v[tuple(sorted(C + (player,)))] - v[C] for C in coalitions_without_player)
             banzhaf_indices.append(banzhaf_index)
-        
+
         banzhaf_index_sum = sum(banzhaf_indices)
         relative_banzhaf_indices = [raw_banzhaf / banzhaf_index_sum for raw_banzhaf in banzhaf_indices]
         return relative_banzhaf_indices
+
 
 class ShiftIndex(PowerIndex):
     def compute(self, game: WeightedVotingGame) -> list[float]:
@@ -84,7 +88,7 @@ class ShiftIndex(PowerIndex):
         for player in game.players:
             W_sm_j = [W for W in W_sm if player in W]
             W_sm_lens.append(len(W_sm_j))
-        
+
         W_sm_len_sum = sum(W_sm_lens)
         return [W_len / W_sm_len_sum for W_len in W_sm_lens]
 
@@ -105,6 +109,7 @@ class PublicGoodIndex(PowerIndex):
             pgi_list.append(len(W_m_j) / W_m_len)
         pgi_sum = sum(pgi_list)
         return [pgi / pgi_sum for pgi in pgi_list]
+
 
 class PublicHelpIndex(PowerIndex):
     def compute(self, game: WeightedVotingGame) -> list[float]:
