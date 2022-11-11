@@ -113,17 +113,25 @@ class Game(BaseGame):
         N = self.coalitions[-1]
         n = len(self.players)
 
-        # Initalize game constraints
+        # Get the coalitions in between the one coalitions and the grand coalition.
+        cols = self.coalitions[n:-1]
+
+        # Initialize game constraints
 
         # Equality constraints.
         A_eq = [[1 for _ in range(n)]]
         b_eq = [v[N]]
 
         # Upper bound constraints.
-        A_ub = [[-1 if i != j else 0 for j in range(n)] for i in range(n)]
-        b_ub = [v[c] for c in self.coalitions[n:-1]]
+        A_ub = []
+        for coalition in cols:
+            a_ub = [0 for _ in range(n)]
+            for p in coalition:
+                a_ub[p - 1] = -1
+            A_ub.append(a_ub)
+        b_ub = [v[c] for c in cols]
 
-        # Get the inital bounds for each player.
+        # Get the initial bounds for each player.
         lbs = [v[c] for c in self.get_one_coalitions()]
         ubs = [v[N] - sum(lb for j, lb in enumerate(lbs) if j != i) for i, _ in enumerate(lbs)]
         bounds = [(lb, ub) for lb, ub in zip(lbs, ubs)]
