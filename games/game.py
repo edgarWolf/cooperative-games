@@ -123,12 +123,7 @@ class Game(BaseGame):
         b_eq = [v[N]]
 
         # Upper bound constraints.
-        A_ub = []
-        for coalition in cols:
-            a_ub = [0 for _ in range(n)]
-            for p in coalition:
-                a_ub[p - 1] = -1
-            A_ub.append(a_ub)
+        A_ub = [[-1 if (i + 1) in coalition else 0 for i in range(n)] for coalition in cols]
         b_ub = [v[c] for c in cols]
 
         # Get the initial bounds for each player.
