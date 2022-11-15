@@ -3,6 +3,7 @@ import pytest
 from games.game import Game
 from indices.power_values import *
 
+
 def test_constructor():
     """Test the game constructor."""
     # Test a vaild game.
@@ -10,11 +11,11 @@ def test_constructor():
     game = Game(contributions=contributions)
     expected_coalitions = [
         (1,), (2,), (3,),
-        (1,2,), (1,3,), (2,3,),
-        (1,2,3,),
+        (1, 2,), (1, 3,), (2, 3,),
+        (1, 2, 3,),
     ]
     assert set(game.players) == set([1, 2, 3])
-    assert set(game.contributions) == set(contributions)#
+    assert set(game.contributions) == set(contributions)  #
     assert set(game.coalitions) == set(expected_coalitions)
 
     # Test invalid contributions.
@@ -36,7 +37,7 @@ def test_constructor():
     with pytest.raises(ValueError, match="Contributions have to grow monotone by coalition size."):
         contributions = [1, 2, 3, 2, 4, 5, 3]
         game = Game(contributions=contributions)
-    
+
     # Test monotonity again for contributions with only one player:
     contributions = [1]
     game = Game(contributions=contributions)
@@ -51,9 +52,9 @@ def test_characterisitc_function():
     contributions = [1, 2, 3, 3, 4, 5, 6]
     game = Game(contributions=contributions)
     expected_output = {
-        (1,) : 1, (2,) : 2, (3,): 3,
-        (1,2,) : 3, (1,3,) : 4, (2,3,) : 5,
-        (1,2,3,) : 6,
+        (1,): 1, (2,): 2, (3,): 3,
+        (1, 2,): 3, (1, 3,): 4, (2, 3,): 5,
+        (1, 2, 3,): 6,
     }
     actual_output = game.characteristic_function()
     assert actual_output == expected_output
@@ -61,9 +62,10 @@ def test_characterisitc_function():
     # Edge case: 1 player
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = { (1,) : 1, }
+    expected_output = {(1,): 1, }
     actual_output = game.characteristic_function()
     assert actual_output == expected_output
+
 
 def test_get_marginal_contribution():
     """Test the marginal contribution of a player in a coaltion."""
@@ -90,6 +92,7 @@ def test_get_marginal_contribution():
     expected_contribution = 3
     actual_contribution = game.get_marginal_contribution(coalition=selected_coalition, player=selected_player)
     assert expected_contribution == actual_contribution
+
 
 def test_get_one_coalitions():
     # Test usual setting.
@@ -132,8 +135,8 @@ def test_get_utopia_payoff_vector():
     actual_output = game.get_utopia_payoff_vector()
     assert expected_output == actual_output
 
-def test_get_minimal_rights_vector():
 
+def test_get_minimal_rights_vector():
     # Test usual setting.
     contributions = [1, 2, 3, 3, 4, 5, 6]
     game = Game(contributions=contributions)
@@ -141,12 +144,11 @@ def test_get_minimal_rights_vector():
     actual_output = game.get_minimal_rights_vector()
     assert expected_output == actual_output
 
-    contributions = [0, 0 ,0, 60, 60, 60, 72]
+    contributions = [0, 0, 0, 60, 60, 60, 72]
     game = Game(contributions=contributions)
     expected_output = [48, 48, 48]
     actual_output = game.get_minimal_rights_vector()
     assert expected_output == actual_output
-
 
     contributions = [2, 4, 5, 18, 14, 9, 24]
     game = Game(contributions=contributions)
@@ -159,16 +161,15 @@ def test_get_minimal_rights_vector():
     expected_output = [1, 2, 3]
     actual_output = game.get_minimal_rights_vector()
     assert expected_output
-    
+
     contributions = [1]
     game = Game(contributions=contributions)
     expected_output = [1]
     actual_output = game.get_minimal_rights_vector()
     assert expected_output == actual_output
-    
+
 
 def test_get_imputation_vertices():
-
     contributions = [1, 2, 3, 3, 4, 5, 6]
     game = Game(contributions=contributions)
     expected_output = [
@@ -180,14 +181,14 @@ def test_get_imputation_vertices():
     contributions = [1, 2, 3, 3, 5, 5, 8]
     game = Game(contributions=contributions)
     expected_output = [
-        [3, 2, 3,],
-        [1, 4, 3,],
+        [3, 2, 3, ],
+        [1, 4, 3, ],
         [1, 2, 5],
     ]
     actual_output = game.get_minimal_rights_vector()
     assert expected_output
 
-    contributions = [0, 0 ,0, 60, 60, 60, 72]
+    contributions = [0, 0, 0, 60, 60, 60, 72]
     game = Game(contributions=contributions)
     expected_output = [
         [72, 0, 0],
@@ -210,7 +211,7 @@ def test_get_imputation_vertices():
     contributions = [1]
     game = Game(contributions=contributions)
     expected_output = [
-        [1,]
+        [1, ]
     ]
     actual_output = game.get_imputation_vertices()
     assert expected_output == actual_output
@@ -220,10 +221,10 @@ def test_get_core_vertices():
     contributions = [2, 4, 5, 18, 14, 9, 24]
     game = Game(contributions=contributions)
     expected_output = np.array([
-       np.array([8, 10,  6]),
-       np.array([9, 10,  5]),
-       np.array([14,  4,  6]),
-       np.array([15,  4,  5]),
+        np.array([8, 10, 6]),
+        np.array([9, 10, 5]),
+        np.array([14, 4, 6]),
+        np.array([15, 4, 5]),
     ])
     actual_output = game.get_core_vertices()
     assert np.array_equal(expected_output, actual_output)
@@ -236,7 +237,7 @@ def test_get_core_vertices():
     actual_output = game.get_core_vertices()
     assert np.array_equal(expected_output, actual_output)
 
-    contributions = [0, 0, 0, 60, 80,  100, 135]
+    contributions = [0, 0, 0, 60, 80, 100, 135]
     game = Game(contributions=contributions)
     expected_output = np.array([
         np.array([5, 55, 75]),
@@ -284,8 +285,27 @@ def test_is_convex():
     assert expected_output == actual_output
 
 
-def test_shapley_value():
+def test_is_super_additive():
+    contributions = [1, 1, 1, 2, 2, 2, 3]
+    game = Game(contributions=contributions)
+    expected_output = True
+    actual_output = game.is_additive()
+    assert expected_output == actual_output
 
+    contributions = [0, 0, 0, 40, 50, 20, 100]
+    game = Game(contributions=contributions)
+    expected_output = False
+    actual_output = game.is_additive()
+    assert expected_output == actual_output
+
+    contributions = [1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4]
+    game = Game(contributions=contributions)
+    expected_output = True
+    actual_output = game.is_additive()
+    assert expected_output == actual_output
+
+
+def test_shapley_value():
     contributions = [2, 4, 5, 18, 14, 9, 24]
     shapley = ShapleyValue()
     game = Game(contributions=contributions)
@@ -301,10 +321,9 @@ def test_shapley_value():
 
     contributions = [120, 60, 40, 30, 120, 120, 120, 60, 60, 40, 120, 120, 120, 60, 120]
     game = Game(contributions=contributions)
-    expected_output = [80.83333, 20.83333, 10.83333,  7.50000]
+    expected_output = [80.83333, 20.83333, 10.83333, 7.50000]
     actual_output = shapley.compute(game)
     assert expected_output == pytest.approx(actual_output)
-
 
     contributions = [1]
     game = Game(contributions=contributions)
@@ -320,13 +339,12 @@ def test_shapley_value():
 
 
 def test_banzhaf_value():
-
     banzhaf = BanzhafValue()
 
     # Test normalized
     contributions = [0, 0, 0, 1, 2, 1, 3]
     game = Game(contributions=contributions)
-    expected_output = [15/13, 9/13, 15/13]
+    expected_output = [15 / 13, 9 / 13, 15 / 13]
     actual_output = banzhaf.compute(game)
     assert expected_output == pytest.approx(actual_output)
 
@@ -337,10 +355,10 @@ def test_banzhaf_value():
 
     contributions = [0, 0, 0, 1, 2, 1, 4]
     game = Game(contributions=contributions)
-    expected_output = [3/2, 1, 3/2]
+    expected_output = [3 / 2, 1, 3 / 2]
     actual_output = banzhaf.compute(game)
     assert expected_output == pytest.approx(actual_output)
-    
+
     expected_output = [1.5, 1, 1.5]
     actual_output = banzhaf.compute(game, normalized=False)
     assert expected_output == actual_output
@@ -369,7 +387,7 @@ def test_gately_point():
 
     contributions = [0, 0, 0, 4, 0, 3, 6]
     game = Game(contributions=contributions)
-    expected_output = [18/11, 36/11, 12/11]
+    expected_output = [18 / 11, 36 / 11, 12 / 11]
     actual_output = gately.compute(game)
     assert expected_output == pytest.approx(actual_output)
 
@@ -397,7 +415,7 @@ def test_tau_value():
 
     contributions = [0, 0, 0, 0, 1, 0, 1]
     game = Game(contributions=contributions)
-    expected_output = [1/2, 0, 1/2]
+    expected_output = [1 / 2, 0, 1 / 2]
     actual_output = tau.compute(game)
     assert expected_output == pytest.approx(actual_output)
 

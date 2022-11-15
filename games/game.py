@@ -151,7 +151,7 @@ class Game(BaseGame):
             axis=0)
 
     def is_convex(self):
-        v = self.characteristic_function()
+        v = self.characteristic_function().copy()
         v[tuple()] = 0
         for i, C in enumerate(self.coalitions):
             for D in self.coalitions[i:]:
@@ -163,6 +163,24 @@ class Game(BaseGame):
                 C_intersection_D = tuple(sorted(p for p in C_intersection_D))
 
                 if v[C_union_D] + v[C_intersection_D] < v[C] + v[D]:
+                    return False
+        return True
+
+    def is_additive(self):
+        v = self.characteristic_function().copy()
+        v[tuple()] = 0
+        for i, A, in enumerate(self.coalitions):
+            for B in self.coalitions[i:]:
+                A_set = set(A)
+                B_set = set(B)
+                A_intersection_B = A_set.intersection(B_set)
+
+                if A_intersection_B:
+                    continue
+
+                A_union_B = A_set.union(B)
+                A_union_B = tuple(sorted(p for p in A_union_B))
+                if v[A] + v[B] != v[A_union_B]:
                     return False
         return True
 
