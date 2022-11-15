@@ -150,6 +150,22 @@ class Game(BaseGame):
             [np.round(linprog(c, A_eq=A_eq, b_eq=b_eq, A_ub=A_ub, b_ub=b_ub, bounds=bounds).x).astype(int) for c in C],
             axis=0)
 
+    def is_convex(self):
+        v = self.characteristic_function()
+        v[tuple()] = 0
+        for i, C in enumerate(self.coalitions):
+            for D in self.coalitions[i:]:
+                C_set = set(C)
+                D_set = set(D)
+                C_union_D = C_set.union(D_set)
+                C_intersection_D = C_set.intersection(D)
+                C_union_D = tuple(sorted(p for p in C_union_D))
+                C_intersection_D = tuple(sorted(p for p in C_intersection_D))
+
+                if v[C_union_D] + v[C_intersection_D] < v[C] + v[D]:
+                    return False
+        return True
+
     def _get_maximization_coefficients(self, bounds: List[Tuple]) -> np.ndarray:
         v = self.characteristic_function()
         N = self.coalitions[-1]

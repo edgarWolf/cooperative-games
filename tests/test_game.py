@@ -246,12 +246,49 @@ def test_get_core_vertices():
     actual_output = game.get_core_vertices()
     assert np.array_equal(expected_output, actual_output)
 
+    # contributions = [5, 2, 4, 7, 15, 15, 15, 15, 15, 15, 20, 20, 20, 20, 35]
+    # game = Game(contributions=contributions)
+    # expected_output = np.array([
+    #     np.array([5, 10, 10, 10]),
+    #     np.array([7.5, 7.5, 7.5, 12.5]),
+    #     np.array([7.5, 7.5, 12.5, 7.5]),
+    #     np.array([10, 5, 10, 10]),
+    #     np.array([12.5, 7.5, 7.5, 7.5]),
+    #     np.array([10, 10, 5, 10]),
+    #     np.array([7.5, 12.5, 7.5, 7.5]),
+    #     np.array([12, 8, 8, 7]),
+    #     np.array([8, 12, 8, 7]),
+    #     np.array([8, 8, 12, 7]),
+    # ])
+    # actual_output = game.get_core_vertices()
+    # assert np.array_equal(expected_output, actual_output)
+
+
+def test_is_convex():
+    contributions = [0, 0, 0, 1, 1, 1, 5]
+    game = Game(contributions=contributions)
+    expected_output = True
+    actual_output = game.is_convex()
+    assert expected_output == actual_output
+
+    contributions = [0, 0, 0, 1, 2, 1, 4]
+    game = Game(contributions=contributions)
+    expected_output = True
+    actual_output = game.is_convex()
+    assert expected_output == actual_output
+
+    contributions = [1, 2, 3, 4, 5, 6, 7]
+    game = Game(contributions=contributions)
+    expected_output = False
+    actual_output = game.is_convex()
+    assert expected_output == actual_output
+
 
 def test_shapley_value():
 
     contributions = [2, 4, 5, 18, 14, 9, 24]
     shapley = ShapleyValue()
-    game = Game( contributions=contributions)
+    game = Game(contributions=contributions)
     expected_output = [9.5, 8, 6.5]
     actual_output = shapley.compute(game)
     assert expected_output == actual_output
