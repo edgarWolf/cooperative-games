@@ -82,6 +82,42 @@ def test_characteristic_function():
     actual_output = game.characteristic_function()
     assert excpected_output == actual_output
 
+def test_null_player():
+    contributions = [50, 30, 20, 0]
+    quorum = 51
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = [4]
+    actual_output = game.null_players()
+    assert expected_output == actual_output
+
+    contributions = [50, 30, 20, 0]
+    quorum = 200
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = [1, 2, 3, 4]
+    actual_output = game.null_players()
+    assert expected_output == actual_output
+
+    contributions = [50, 30, 20, 1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = []
+    actual_output = game.null_players()
+    assert expected_output == actual_output
+
+    contributions = [1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = []
+    actual_output = game.null_players()
+    assert expected_output == actual_output
+
+    contributions = [1]
+    quorum = 99
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = [1]
+    actual_output = game.null_players()
+    assert expected_output == actual_output
+
 
 def test_get_winning_coalitions():
     """Test the winning coalitions method for weighted voting games."""

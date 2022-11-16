@@ -29,6 +29,28 @@ class WeightedVotingGame(BaseGame):
         return {coalition: 1 if sum(self.contributions[player - 1] for player in coalition) >= self.quorum else 0 for
                 coalition in self.coalitions}
 
+    def null_players(self) -> List[int]:
+        v = self.characteristic_function().copy()
+        coalitions = self.coalitions
+        coalitions.insert(0, tuple())
+        v[tuple()] = 0
+        null_players = []
+
+        for i in self.players:
+            cols = [S for S in coalitions if i not in S or S is ()]
+            is_null_player = True
+            for S in cols:
+                S_set = set(S)
+                S_union_i = S_set.union({i})
+                S_union_i = tuple(sorted(p for p in S_union_i))
+                if v[S_union_i] - v[S] == 1:
+                    is_null_player = False
+                    break
+            if is_null_player:
+                null_players.append(i)
+
+        return null_players
+
     def get_minimal_winning_coalitions(self) -> List[Tuple]:
         """Returns a list of the minimal winning coalitions."""
         critical_coalitions = self.get_pivot_players()
