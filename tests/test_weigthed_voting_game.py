@@ -768,3 +768,43 @@ def test_egalitarian_index():
     actual_output = e.compute(game=game)
     assert expected_output == actual_output
 
+
+def  test_gn_minus_index():
+    g = GnMinusIndex()
+
+    weights = [1, 1, 0]
+    quorum = 2
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1 / 2, 1 / 2, 0]
+    actual_output = g.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    actual_output = g.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1, 1, 0]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0, 0, 0]
+    actual_output = g.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1]
+    actual_output = g.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 99
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0]
+    actual_output = g.compute(game=game)
+    assert expected_output == actual_output
+
+

@@ -165,3 +165,28 @@ class EgalitarianIndex(PowerIndex):
         n = len(game.players)
         winning = len(game.get_winning_coalitions()) > 0
         return [1 / n for _ in range(n)] if winning else [0 for _ in range(n)]
+
+
+class GnMinusIndex(PowerIndex):
+
+    def compute(self, game: WeightedVotingGame) -> List[float]:
+        """
+        Returns a list of the g^{n-} indices for all players in the game.
+        The g^{n-} index is defined as:
+        g^{n-}_i(v) = |W^{n-}_i| / sum_{j in N} |W^{n-}_j|, if |W^{n-}_j| > 0, else 0, where
+            - v denotes the characteristic function of the game.
+            - W^{n-}_i denotes the set of null player free coalitions containing player i.
+            - N denotes the grand coalition.
+        """
+        null_player_free_cols = game.winning_coalitions_without_null_players()
+        G = []
+        col_lens_without_null_player = [len([col for col in null_player_free_cols if p in col]) for p in game.players]
+
+        for player in game.players:
+            cols_with_player_len = len([col for col in null_player_free_cols if player in col])
+            sum_lens_other_cols = sum(l_c for l_c in col_lens_without_null_player)
+            if sum_lens_other_cols == 0:
+                G.append(0)
+            else:
+                G.append(cols_with_player_len / sum_lens_other_cols)
+        return G
