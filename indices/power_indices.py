@@ -181,19 +181,26 @@ class GnMinusIndex(PowerIndex):
         null_player_free_cols = game.winning_coalitions_without_null_players()
         G = []
         col_lens_without_null_player = [len([col for col in null_player_free_cols if p in col]) for p in game.players]
-
+        sum_lens_cols_without_null = sum(l_c for l_c in col_lens_without_null_player)
+        if sum_lens_cols_without_null == 0:
+            return [0 for _ in game.players]
         for player in game.players:
             cols_with_player_len = len([col for col in null_player_free_cols if player in col])
-            sum_lens_other_cols = sum(l_c for l_c in col_lens_without_null_player)
-            if sum_lens_other_cols == 0:
-                G.append(0)
-            else:
-                G.append(cols_with_player_len / sum_lens_other_cols)
+            G.append(cols_with_player_len / sum_lens_cols_without_null)
         return G
 
 
 class NevisonIndex(PowerIndex):
     def compute(self, game: WeightedVotingGame) -> List[float]:
+        """
+        Returns a list of the nevison indices for all players in the game.
+        The nevison index is defined as:
+        Z_i(v) = |W_i| / 2^{n-1}, where
+            - v denotes the characteristic function of the game.
+            - n denotes the number of players.
+            - W_i denotes the set of winning coalitions containing player i.
+        A normalized version of this index is equal to the public help index.
+        """
         n = len(game.players)
         W = game.get_winning_coalitions()
         NI = []
@@ -202,3 +209,25 @@ class NevisonIndex(PowerIndex):
             W_i_len = len([c for c in W if player in c])
             NI.append(W_i_len / denominator)
         return NI
+
+
+class KoenigAndBraeningerIndex(PowerIndex):
+    def compute(self, game: WeightedVotingGame) -> List[float]:
+        """
+        Returns a list of the koenig-and-braeuninger indices for all players in the game.
+        The koenig-and-braeuninger index is defined as:
+        KB_i(v) = |W_i| / |W|, where
+            - v denotes the characteristic function of the game.
+            - W_i denotes the set of winning coalitions containg player i.
+            - W denotes the set of winning coalitions.
+        A normalized version of this index is equal to the public help index.
+        """
+        W = game.get_winning_coalitions()
+        W_len = len(W)
+        if W_len == 0:
+            return [0 for _ in game.players]
+        KB = []
+        for player in game.players:
+            W_i_len = len([c for c in W if player in c])
+            KB.append(W_i_len / W_len)
+        return KB

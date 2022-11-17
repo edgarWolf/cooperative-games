@@ -738,7 +738,7 @@ def test_egalitarian_index():
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [1 / 3, 1 / 3, 1 / 3]
     actual_output = e.compute(game=game)
-    assert  expected_output == actual_output
+    assert expected_output == actual_output
 
     weights = [2, 1, 1, 1]
     quorum = 5
@@ -807,6 +807,7 @@ def test_gn_minus_index():
     actual_output = g.compute(game=game)
     assert expected_output == actual_output
 
+
 def test_nevison_index():
     nevison = NevisonIndex()
 
@@ -843,4 +844,43 @@ def test_nevison_index():
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [0]
     actual_output = nevison.compute(game=game)
+    assert expected_output == actual_output
+
+
+def test_koenig_and_braeuninger_index():
+    kb = KoenigAndBraeningerIndex()
+
+    weights = [1, 1, 0]
+    quorum = 2
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1, 1, 1 / 2]
+    actual_output = kb.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1, 1, 1, 1]
+    actual_output = kb.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1, 1, 0]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0, 0, 0]
+    actual_output = kb.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1]
+    actual_output = kb.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 99
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0]
+    actual_output = kb.compute(game=game)
     assert expected_output == actual_output
