@@ -11,8 +11,8 @@ def test_constructor():
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_coalitions = [
         (1,), (2,), (3,),
-        (1,2,), (1,3,), (2,3,),
-        (1,2,3,),
+        (1, 2,), (1, 3,), (2, 3,),
+        (1, 2, 3,),
     ]
     assert set(game.contributions) == set(weights)
     assert game.quorum == quorum
@@ -28,7 +28,7 @@ def test_constructor():
     with pytest.raises(ValueError, match="Weight vector containns nonallowed negative weights."):
         weights = [-1, 0, 1]
         game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    
+
     # Test invalid quorum:
     with pytest.raises(ValueError, match="Qurom is only allowed to be greater than 0."):
         weights = [1, 2, 3, ]
@@ -41,12 +41,12 @@ def test_characteristic_function():
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    
+
     # We can find the winning coalitions (1, 3), (2,3) and (1, 2, 3)
     excpected_output = {
-        (1,) : 0, (2,) : 0, (3,) : 0,
-        (1, 2,) : 0, (1, 3,) : 1, (2, 3,) : 1,
-        (1, 2, 3,) : 1
+        (1,): 0, (2,): 0, (3,): 0,
+        (1, 2,): 0, (1, 3,): 1, (2, 3,): 1,
+        (1, 2, 3,): 1
     }
     actual_output = game.characteristic_function()
     assert excpected_output == actual_output
@@ -55,9 +55,9 @@ def test_characteristic_function():
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     excpected_output = {
-        (1,) : 0, (2,) : 0, (3,) : 0,
-        (1, 2,) : 0, (1, 3,) : 0, (2, 3,) : 0,
-        (1, 2, 3,) : 0
+        (1,): 0, (2,): 0, (3,): 0,
+        (1, 2,): 0, (1, 3,): 0, (2, 3,): 0,
+        (1, 2, 3,): 0
     }
     actual_output = game.characteristic_function()
     assert excpected_output == actual_output
@@ -66,9 +66,9 @@ def test_characteristic_function():
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     excpected_output = {
-        (1,) : 1, (2,) : 1, (3,) : 1,
-        (1, 2,) : 1, (1, 3,) : 1, (2, 3,) : 1,
-        (1, 2, 3,) : 1
+        (1,): 1, (2,): 1, (3,): 1,
+        (1, 2,): 1, (1, 3,): 1, (2, 3,): 1,
+        (1, 2, 3,): 1
     }
     actual_output = game.characteristic_function()
     assert excpected_output == actual_output
@@ -78,9 +78,10 @@ def test_characteristic_function():
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
 
-    excpected_output = { (1,) : 1 }
+    excpected_output = {(1,): 1}
     actual_output = game.characteristic_function()
     assert excpected_output == actual_output
+
 
 def test_null_player():
     contributions = [50, 30, 20, 0]
@@ -124,7 +125,7 @@ def test_get_winning_coalitions():
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    excpected_output = [(1,3,), (2,3,), (1,2,3,)]
+    excpected_output = [(1, 3,), (2, 3,), (1, 2, 3,)]
     actual_output = game.get_winning_coalitions()
     assert excpected_output == actual_output
 
@@ -138,7 +139,7 @@ def test_get_winning_coalitions():
     # Special case: All coalitions are winning coalitions.
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    excpected_output = [(1,), (2,), (3,), (1,2,), (1,3,), (2,3,), (1,2,3),]
+    excpected_output = [(1,), (2,), (3,), (1, 2,), (1, 3,), (2, 3,), (1, 2, 3), ]
     actual_output = game.get_winning_coalitions()
     assert excpected_output == actual_output
 
@@ -151,6 +152,44 @@ def test_get_winning_coalitions():
     assert excpected_output == actual_output
 
 
+def test_winning_coalitions_without_null_players():
+    contributions = [50, 30, 20, 0]
+    quorum = 51
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = [(1, 2), (1, 3,), (1, 2, 3)]
+    actual_output = game.winning_coalitions_without_null_players()
+    assert expected_output == actual_output
+
+    contributions = [50, 30, 20, 0]
+    quorum = 200
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = []
+    actual_output = game.winning_coalitions_without_null_players()
+    assert expected_output == actual_output
+
+    contributions = [50, 30, 20, 1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = [(1,), (2,), (3,), (4,), (1, 2), (1, 3,), (1, 4,), (2, 3), (2, 4), (3, 4), (1, 2, 3), (1, 2, 4,),
+                       (1, 3, 4), (2, 3, 4), (1, 2, 3, 4)]
+    actual_output = game.winning_coalitions_without_null_players()
+    assert expected_output == actual_output
+
+    contributions = [1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = [(1,)]
+    actual_output = game.winning_coalitions_without_null_players()
+    assert expected_output == actual_output
+
+    contributions = [1]
+    quorum = 99
+    game = WeightedVotingGame(contributions=contributions, quorum=quorum)
+    expected_output = []
+    actual_output = game.winning_coalitions_without_null_players()
+    assert expected_output == actual_output
+
+
 def test_get_pivot_players():
     """Test the pivot players method for weighted voting games."""
     # Test usual cases.
@@ -158,16 +197,16 @@ def test_get_pivot_players():
     quorum = 4
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = {
-        (1,3) : [1, 3], (2,3,) : [2,3],
-        (1,2,3,) : [3]
+        (1, 3): [1, 3], (2, 3,): [2, 3],
+        (1, 2, 3,): [3]
     }
     actual_output = game.get_pivot_players()
     assert expected_output == actual_output
 
     expected_output = {
-        (1,): [], (2,) : [], (3,) : [],
-        (1,2) : [], (1,3) : [1, 3], (2,3,) : [2,3],
-        (1,2,3,) : [3]
+        (1,): [], (2,): [], (3,): [],
+        (1, 2): [], (1, 3): [1, 3], (2, 3,): [2, 3],
+        (1, 2, 3,): [3]
     }
     actual_output = game.get_pivot_players(all_coalitions=True)
     assert expected_output == actual_output
@@ -180,9 +219,9 @@ def test_get_pivot_players():
     assert actual_output == expected_output
 
     expected_output = {
-        (1,): [], (2,) : [], (3,) : [],
-        (1,2) : [], (1,3) : [], (2,3,) : [],
-        (1,2,3,) : []
+        (1,): [], (2,): [], (3,): [],
+        (1, 2): [], (1, 3): [], (2, 3,): [],
+        (1, 2, 3,): []
     }
     actual_output = game.get_pivot_players(all_coalitions=True)
     assert expected_output == actual_output
@@ -191,26 +230,25 @@ def test_get_pivot_players():
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = {(1,) : [1]}
+    expected_output = {(1,): [1]}
     actual_output = game.get_pivot_players()
     assert expected_output == actual_output
+
 
 def test_get_minimal_winning_coalitions():
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,3), (2,3)]
+    expected_output = [(1, 3), (2, 3)]
     actual_output = game.get_minimal_winning_coalitions()
     assert expected_output == actual_output
-
 
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,2), (1,3)]
+    expected_output = [(1, 2), (1, 3)]
     actual_output = game.get_minimal_winning_coalitions()
     assert expected_output == actual_output
-
 
     # Special case: No winning coalitions.
     quorum = 99
@@ -223,7 +261,7 @@ def test_get_minimal_winning_coalitions():
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,2,3,4)]
+    expected_output = [(1, 2, 3, 4)]
     actual_output = game.get_minimal_winning_coalitions()
     assert expected_output == actual_output
 
@@ -234,6 +272,7 @@ def test_get_minimal_winning_coalitions():
     expected_output = [(1,)]
     actual_output = game.get_minimal_winning_coalitions()
     assert expected_output == actual_output
+
 
 def test_preferred_player():
     # Test usual case.
@@ -311,54 +350,54 @@ def test_preferred_player():
     quorum = 6
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = 1
-    actual_output = game.preferred_player(1,2)
+    actual_output = game.preferred_player(1, 2)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(2,1)
-    assert expected_output == actual_output
-    expected_output = 1
-    actual_output = game.preferred_player(1,3)
-    assert expected_output == actual_output
-    actual_output = game.preferred_player(3,1)
+    actual_output = game.preferred_player(2, 1)
     assert expected_output == actual_output
     expected_output = 1
-    actual_output = game.preferred_player(1,4)
+    actual_output = game.preferred_player(1, 3)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(4,1)
+    actual_output = game.preferred_player(3, 1)
     assert expected_output == actual_output
     expected_output = 1
-    actual_output = game.preferred_player(1,5)
+    actual_output = game.preferred_player(1, 4)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(5,1)
+    actual_output = game.preferred_player(4, 1)
+    assert expected_output == actual_output
+    expected_output = 1
+    actual_output = game.preferred_player(1, 5)
+    assert expected_output == actual_output
+    actual_output = game.preferred_player(5, 1)
     assert expected_output == actual_output
     expected_output = None
-    actual_output = game.preferred_player(2,3)
+    actual_output = game.preferred_player(2, 3)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(3,2)
-    assert expected_output == actual_output
-    expected_output = 2
-    actual_output = game.preferred_player(2,4)
-    assert expected_output == actual_output
-    actual_output = game.preferred_player(4,2)
+    actual_output = game.preferred_player(3, 2)
     assert expected_output == actual_output
     expected_output = 2
-    actual_output = game.preferred_player(2,5)
+    actual_output = game.preferred_player(2, 4)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(5,2)
+    actual_output = game.preferred_player(4, 2)
+    assert expected_output == actual_output
+    expected_output = 2
+    actual_output = game.preferred_player(2, 5)
+    assert expected_output == actual_output
+    actual_output = game.preferred_player(5, 2)
     assert expected_output == actual_output
     expected_output = 3
-    actual_output = game.preferred_player(3,4)
+    actual_output = game.preferred_player(3, 4)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(4,3)
+    actual_output = game.preferred_player(4, 3)
     assert expected_output == actual_output
     expected_output = 3
-    actual_output = game.preferred_player(3,5)
+    actual_output = game.preferred_player(3, 5)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(5,3)
+    actual_output = game.preferred_player(5, 3)
     assert expected_output == actual_output
     expected_output = None
-    actual_output = game.preferred_player(4,5)
+    actual_output = game.preferred_player(4, 5)
     assert expected_output == actual_output
-    actual_output = game.preferred_player(5,4)
+    actual_output = game.preferred_player(5, 4)
     assert expected_output == actual_output
 
     # Test invalid players.
@@ -372,54 +411,54 @@ def test_get_shift_minimal_winning_coalitions():
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,3)]
+    expected_output = [(1, 3)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,2), (1,3)]
+    expected_output = [(1, 2), (1, 3)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,2)]
+    expected_output = [(1, 2)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,2,3,4)]
+    expected_output = [(1, 2, 3, 4)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [5, 40, 26, 25, 4]
     quorum = 51
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(3,4,)]
+    expected_output = [(3, 4,)]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
     weights = [5, 2, 2, 1, 1]
     quorum = 6
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [(1,4), (1,5,), (2,3,4,5),]
+    expected_output = [(1, 4), (1, 5,), (2, 3, 4, 5), ]
     actual_output = game.get_shift_winning_coalitions()
     assert expected_output == actual_output
 
-    
+
 def test_player_ranking():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = {
-        (1,2): 1,
-        (1,3): 1,
-        (2,3): None
+        (1, 2): 1,
+        (1, 3): 1,
+        (2, 3): None
     }
     actual_output = game.get_player_ranking()
     assert expected_output == actual_output
@@ -428,9 +467,9 @@ def test_player_ranking():
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = {
-        (1,2): 1,
-        (1,3): 1,
-        (2,3): 2,
+        (1, 2): 1,
+        (1, 3): 1,
+        (2, 3): 2,
     }
     actual_output = game.get_player_ranking()
     assert expected_output == actual_output
@@ -439,22 +478,19 @@ def test_player_ranking():
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = {
-        (1,2): 1,
-        (1,3): 1,
-        (1,4): 1,
-        (2,3): None,
-        (2,4): None,
-        (3,4): None
+        (1, 2): 1,
+        (1, 3): 1,
+        (1, 4): 1,
+        (2, 3): None,
+        (2, 4): None,
+        (3, 4): None
 
     }
     actual_output = game.get_player_ranking()
     assert expected_output == actual_output
-    
-
 
 
 def test_shapley_shubik_index():
-
     # Instantiate instance of shapley shubik index.
     shapley = ShapleyShubikIndex()
 
@@ -462,7 +498,7 @@ def test_shapley_shubik_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [2/3, 1/6, 1/6]
+    expected_output = [2 / 3, 1 / 6, 1 / 6]
     actual_output = shapley.compute(game=game)
     assert expected_output == actual_output
 
@@ -470,7 +506,7 @@ def test_shapley_shubik_index():
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 1/2, 0]
+    expected_output = [1 / 2, 1 / 2, 0]
     actual_output = shapley.compute(game=game)
     assert expected_output == actual_output
 
@@ -478,7 +514,7 @@ def test_shapley_shubik_index():
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/4, 1/4, 1/4, 1/4]
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
     actual_output = shapley.compute(game=game)
     assert expected_output == actual_output
 
@@ -492,7 +528,6 @@ def test_shapley_shubik_index():
 
 
 def test_banzhaf_index():
-
     # Instantiate instance of banzhaf index.
     banzhaf = BanzhafIndex()
 
@@ -500,7 +535,7 @@ def test_banzhaf_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [3/5, 1/5, 1/5]
+    expected_output = [3 / 5, 1 / 5, 1 / 5]
     actual_output = banzhaf.compute(game=game)
     assert expected_output == actual_output
 
@@ -508,7 +543,7 @@ def test_banzhaf_index():
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 1/2, 0]
+    expected_output = [1 / 2, 1 / 2, 0]
     actual_output = banzhaf.compute(game=game)
     assert expected_output == actual_output
 
@@ -516,7 +551,7 @@ def test_banzhaf_index():
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/4, 1/4, 1/4, 1/4]
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
     actual_output = banzhaf.compute(game=game)
     assert expected_output == actual_output
 
@@ -528,23 +563,24 @@ def test_banzhaf_index():
     actual_output = banzhaf.compute(game=game)
     assert expected_output == actual_output
 
+
 def test_johnston_index():
-   # Instantiate instance of johnston index.
+    # Instantiate instance of johnston index.
     johnston = JohnstonIndex()
 
     # Test usual case.
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [2/3, 1/6, 1/6]
+    expected_output = [2 / 3, 1 / 6, 1 / 6]
     actual_output = johnston.compute(game=game)
     assert expected_output == actual_output
 
-   # Special case: One player is never pivot player.
+    # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 1/2, 0]
+    expected_output = [1 / 2, 1 / 2, 0]
     actual_output = johnston.compute(game=game)
     assert expected_output == actual_output
 
@@ -552,7 +588,7 @@ def test_johnston_index():
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/4, 1/4, 1/4, 1/4]
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
     actual_output = johnston.compute(game=game)
     assert expected_output == actual_output
 
@@ -563,6 +599,7 @@ def test_johnston_index():
     expected_output = [1]
     actual_output = johnston.compute(game=game)
     assert expected_output == actual_output
+
 
 def test_pgi_index():
     # Instantiate instance of banzhaf index.
@@ -572,15 +609,15 @@ def test_pgi_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 1/4, 1/4]
+    expected_output = [1 / 2, 1 / 4, 1 / 4]
     actual_output = pgi.compute(game=game)
     assert expected_output == actual_output
 
-   # Special case: One player is never pivot player.
+    # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 1/2, 0]
+    expected_output = [1 / 2, 1 / 2, 0]
     actual_output = pgi.compute(game=game)
     assert expected_output == actual_output
 
@@ -588,7 +625,7 @@ def test_pgi_index():
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/4, 1/4, 1/4, 1/4]
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
     actual_output = pgi.compute(game=game)
     assert expected_output == actual_output
 
@@ -600,23 +637,24 @@ def test_pgi_index():
     actual_output = pgi.compute(game=game)
     assert expected_output == actual_output
 
+
 def test_phi_index():
-   # Instantiate instance of banzhaf index.
+    # Instantiate instance of banzhaf index.
     phi = PublicHelpIndex()
 
     # Test usual case.
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [3/7, 2/7, 2/7]
+    expected_output = [3 / 7, 2 / 7, 2 / 7]
     actual_output = phi.compute(game=game)
     assert expected_output == pytest.approx(actual_output)
 
-   # Special case: One player is never pivot player.
+    # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [2/5, 2/5, 1/5]
+    expected_output = [2 / 5, 2 / 5, 1 / 5]
     actual_output = phi.compute(game=game)
     assert expected_output == actual_output
 
@@ -624,7 +662,7 @@ def test_phi_index():
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/4, 1/4, 1/4, 1/4]
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
     actual_output = phi.compute(game=game)
     assert expected_output == actual_output
 
@@ -635,6 +673,7 @@ def test_phi_index():
     expected_output = [1]
     actual_output = phi.compute(game=game)
     assert expected_output == actual_output
+
 
 def test_shift_index():
     # Instantiate instance of banzhaf index.
@@ -643,45 +682,42 @@ def test_shift_index():
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 0, 1/2]
+    expected_output = [1 / 2, 0, 1 / 2]
     actual_output = shift.compute(game=game)
     assert expected_output == actual_output
-
 
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 1/4, 1/4]
+    expected_output = [1 / 2, 1 / 4, 1 / 4]
     actual_output = shift.compute(game=game)
     assert expected_output == actual_output
-
 
     weights = [5, 2, 2, 1, 1]
     quorum = 6
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/4, 1/8, 1/8, 1/4, 1/4]
+    expected_output = [1 / 4, 1 / 8, 1 / 8, 1 / 4, 1 / 4]
     actual_output = shift.compute(game=game)
     assert expected_output == actual_output
 
-    
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/2, 1/2, 0]
+    expected_output = [1 / 2, 1 / 2, 0]
     actual_output = shift.compute(game=game)
     assert expected_output == actual_output
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1/4, 1/4, 1/4, 1/4]
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
     actual_output = shift.compute(game=game)
     assert expected_output == actual_output
 
     weights = [5, 40, 26, 25, 4]
     quorum = 51
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 1/2, 1/2, 0]
+    expected_output = [0, 0, 1 / 2, 1 / 2, 0]
     actual_output = shift.compute(game=game)
     assert expected_output == actual_output
 

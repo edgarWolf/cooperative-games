@@ -30,6 +30,14 @@ class WeightedVotingGame(BaseGame):
                 coalition in self.coalitions}
 
     def null_players(self) -> List[int]:
+        """
+        Returns a list of null players in the game.
+        A player i is considered a null player, if i never becomes a pivot player, i.e.
+        forall S in P(N) v(S union {i}) - v(S) = 0, where
+            - v denotes the characteristic function of the game.
+            - N dentes the grand coalition.
+            - P(N) denotes the powerset of all coalitions.
+        """
         v = self.characteristic_function().copy()
         coalitions = self.coalitions.copy()
         coalitions.insert(0, tuple())
@@ -50,6 +58,12 @@ class WeightedVotingGame(BaseGame):
                 null_players.append(i)
 
         return null_players
+
+    def winning_coalitions_without_null_players(self) -> List[Tuple]:
+        """Returns a list of all winning coalitions without null players."""
+        null_players = self.null_players()
+        winning_coalitions = self.get_winning_coalitions()
+        return [col for col in winning_coalitions if not any(p for p in col if p in null_players)]
 
     def get_minimal_winning_coalitions(self) -> List[Tuple]:
         """Returns a list of the minimal winning coalitions."""
