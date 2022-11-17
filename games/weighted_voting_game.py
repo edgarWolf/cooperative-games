@@ -31,7 +31,7 @@ class WeightedVotingGame(BaseGame):
 
     def null_players(self) -> List[int]:
         v = self.characteristic_function().copy()
-        coalitions = self.coalitions
+        coalitions = self.coalitions.copy()
         coalitions.insert(0, tuple())
         v[tuple()] = 0
         null_players = []
