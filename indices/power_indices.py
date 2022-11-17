@@ -151,3 +151,17 @@ class JohnstonIndex(PowerIndex):
 
         johnston_sum = sum(johnston_indices)
         return [raw_johnston / johnston_sum for raw_johnston in johnston_indices]
+
+
+class EgalitarianIndex(PowerIndex):
+    def compute(self, game: WeightedVotingGame) -> List[float]:
+        """
+        Returns a  list of the egalitarian indices for all players in the game.
+        The egalitarian index for a player j is defined as:
+        e_i(v) = 1 / n, if v contains winning coalitions, else 0, where
+            - v denotes the chararcteristic function of the game.
+            - n denotes the number of players in the game.
+        """
+        n = len(game.players)
+        winning = len(game.get_winning_coalitions()) > 0
+        return [1 / n for _ in range(n)] if winning else [0 for _ in range(n)]
