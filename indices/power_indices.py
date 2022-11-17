@@ -211,7 +211,7 @@ class NevisonIndex(PowerIndex):
         return NI
 
 
-class KoenigAndBraeningerIndex(PowerIndex):
+class KoenigAndBraeuningerIndex(PowerIndex):
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the koenig-and-braeuninger indices for all players in the game.
@@ -231,3 +231,27 @@ class KoenigAndBraeningerIndex(PowerIndex):
             W_i_len = len([c for c in W if player in c])
             KB.append(W_i_len / W_len)
         return KB
+
+
+class RaeIndex(PowerIndex):
+    def compute(self, game: WeightedVotingGame, normalized=True) -> List[float]:
+        """
+        Returns a list of the rae indices for all players in the game.
+        The rae index is defined as:
+        R_i(v) = 1 / 2 + (2|W_i| - |W|) / 2^n, where
+            - v denotes the characteristic function of the game.
+            - n denotes the number of players in the game.
+            - W_i denotes the set of winning coalitions containg player i.
+            - W denotes the set of winning coalitions.
+        """
+        # TODO: Normalized version.
+        W = game.get_winning_coalitions()
+        W_len = len(W)
+        n = len(game.players)
+        denominator = 2**n
+        R = []
+        for player in game.players:
+            W_i_len = len([col for col in W if player in col])
+            term = (2 * W_i_len - W_len) / denominator
+            R.append((1 / 2) + term)
+        return R

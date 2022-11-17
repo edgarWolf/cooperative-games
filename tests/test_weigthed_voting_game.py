@@ -848,7 +848,7 @@ def test_nevison_index():
 
 
 def test_koenig_and_braeuninger_index():
-    kb = KoenigAndBraeningerIndex()
+    kb = KoenigAndBraeuningerIndex()
 
     weights = [1, 1, 0]
     quorum = 2
@@ -884,3 +884,43 @@ def test_koenig_and_braeuninger_index():
     expected_output = [0]
     actual_output = kb.compute(game=game)
     assert expected_output == actual_output
+
+
+def test_rae_index():
+    rae = RaeIndex()
+
+    weights = [1, 1, 0]
+    quorum = 2
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [3 / 4, 3 / 4, 1 / 2]
+    actual_output = rae.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [9 / 16, 9 / 16, 9 / 16, 9 / 16]
+    actual_output = rae.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1, 1, 0]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1 / 2, 1 / 2, 1 / 2]
+    actual_output = rae.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1]
+    actual_output = rae.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 99
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1 / 2]
+    actual_output = rae.compute(game=game)
+    assert expected_output == actual_output
+
