@@ -190,3 +190,15 @@ class GnMinusIndex(PowerIndex):
             else:
                 G.append(cols_with_player_len / sum_lens_other_cols)
         return G
+
+
+class NevisonIndex(PowerIndex):
+    def compute(self, game: WeightedVotingGame) -> List[float]:
+        n = len(game.players)
+        W = game.get_winning_coalitions()
+        NI = []
+        denominator = 2 ** (n - 1)
+        for player in game.players:
+            W_i_len = len([c for c in W if player in c])
+            NI.append(W_i_len / denominator)
+        return NI
