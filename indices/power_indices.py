@@ -315,4 +315,23 @@ class HollerIndex(PowerIndex):
         return H
 
 
+class DeeganPackelIndex(PowerIndex):
+    def compute(self, game: WeightedVotingGame, normalized: bool = True) -> List[float]:
+        """
+        Returns a list of the Deegan-Packel indices for all players in the game.
+        The Deegan-Packel index is defined as:
+        delta_i(v) = sum_{S in W^m_i} 1 / |S|, where
+            - v denotes the characteristic function of the game.
+            - W^m_i denotes the set of minmal winning coalitions containing player i.
+        """
+        W_min = game.get_minimal_winning_coalitions()
+        S = [sum((1 / len(S)) if len(S) > 0 else 0 for S in W_min if i in S) for i in game.players]
+        if normalized:
+            W_min_len = len(W_min)
+            if W_min_len == 0:
+                return [0 for _ in S]
+            normalization_term = 1 / W_min_len
+            S = [normalization_term * s for s in S]
+        return S
+
 

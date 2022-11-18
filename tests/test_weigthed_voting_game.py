@@ -1045,3 +1045,61 @@ def test_holler_index():
     expected_output = [0]
     actual_output = holler.compute(game=game, normalized=True)
     assert expected_output == actual_output
+
+def test_deegan_packel_index():
+    dpi = DeeganPackelIndex()
+
+    weights = [1, 1, 0]
+    quorum = 2
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1 / 2, 1 / 2, 0]
+    actual_output = dpi.compute(game=game, normalized=False)
+    assert  expected_output == actual_output
+
+    expected_output = [1 / 2, 1 / 2, 0]
+    actual_output = dpi.compute(game=game, normalized=True)
+    assert expected_output == actual_output
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    actual_output = dpi.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    actual_output = dpi.compute(game=game, normalized=True)
+    assert expected_output == actual_output
+
+    weights = [1, 1, 0]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0, 0, 0]
+    actual_output = dpi.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    expected_output = [0, 0, 0]
+    actual_output = dpi.compute(game=game, normalized=True)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1]
+    actual_output = dpi.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    expected_output = [1]
+    actual_output = dpi.compute(game=game, normalized=True)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 99
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0]
+    actual_output = dpi.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    expected_output = [0]
+    actual_output = dpi.compute(game=game, normalized=True)
+    assert expected_output == actual_output
