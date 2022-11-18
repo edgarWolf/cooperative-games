@@ -11,6 +11,10 @@ class PowerIndex(ABC):
 
 
 class ShapleyShubikIndex(PowerIndex):
+
+    def __repr__(self) -> str:
+        return "Shapley-Shubik Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the shapley-shubik-indices for all players in the game.
@@ -47,6 +51,9 @@ class ShapleyShubikIndex(PowerIndex):
 
 
 class BanzhafIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Banzhaf Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the banzhaf-indices for all players in the game.
@@ -77,6 +84,9 @@ class BanzhafIndex(PowerIndex):
 
 
 class ShiftIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Shift Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the shift-indices for all players in the game.
@@ -95,6 +105,9 @@ class ShiftIndex(PowerIndex):
 
 
 class PublicGoodIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Public-Good Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the public good index for all players in the game.
@@ -113,6 +126,9 @@ class PublicGoodIndex(PowerIndex):
 
 
 class PublicHelpIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Public-Help Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the public help index for all players in the game.
@@ -131,6 +147,9 @@ class PublicHelpIndex(PowerIndex):
 
 
 class JohnstonIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Johnston Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the johnston-indices for all players in the game.
@@ -157,6 +176,9 @@ class JohnstonIndex(PowerIndex):
 
 
 class EgalitarianIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Egalitarian Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a  list of the egalitarian indices for all players in the game.
@@ -171,6 +193,8 @@ class EgalitarianIndex(PowerIndex):
 
 
 class GnMinusIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "GnMinus Index"
 
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
@@ -194,6 +218,9 @@ class GnMinusIndex(PowerIndex):
 
 
 class NevisonIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Nevison Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the nevison indices for all players in the game.
@@ -215,6 +242,9 @@ class NevisonIndex(PowerIndex):
 
 
 class KoenigAndBraeuningerIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Koenig-and-Braeuninger Index"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the koenig-and-braeuninger indices for all players in the game.
@@ -237,6 +267,9 @@ class KoenigAndBraeuningerIndex(PowerIndex):
 
 
 class RaeIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Rae Index"
+
     def compute(self, game: WeightedVotingGame, normalized: bool = True) -> List[float]:
         """
         Returns a list of the rae indices for all players in the game.
@@ -263,6 +296,9 @@ class RaeIndex(PowerIndex):
 
 
 class SolidarityValue(PowerIndex):
+    def __repr__(self) -> str:
+        return "Solidarity Value"
+
     def compute(self, game: WeightedVotingGame) -> List[float]:
         """
         Returns a list of the solidarity values for all players in the game.
@@ -302,6 +338,9 @@ class SolidarityValue(PowerIndex):
 
 
 class HollerIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Holler Index"
+
     def compute(self, game: WeightedVotingGame, normalized: bool = True) -> List[float]:
         """
         Returns a list of the holler indices for all players in the game.
@@ -319,6 +358,9 @@ class HollerIndex(PowerIndex):
 
 
 class DeeganPackelIndex(PowerIndex):
+    def __repr__(self) -> str:
+        return "Deegan-Packel Index"
+
     def compute(self, game: WeightedVotingGame, normalized: bool = True) -> List[float]:
         """
         Returns a list of the Deegan-Packel indices for all players in the game.
