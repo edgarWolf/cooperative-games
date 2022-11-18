@@ -24,6 +24,21 @@ class WeightedVotingGame(BaseGame):
         self._contributions = contributions
         self.quorum = quorum
 
+    def __repr__(self) -> str:
+        repr = super().__repr__()
+        repr += f"quorum = {self.quorum}"
+        repr += "\n"
+        max_weights_to_show = 32
+        weights_to_show = min(max_weights_to_show, len(self.contributions))
+        repr += "weights = ["
+        for i in range(weights_to_show):
+            if i == weights_to_show - 1:
+                repr += f"{self.contributions[i]}"
+            else:
+                repr += f"{self.contributions[i]}, "
+        repr += "]"
+        return repr
+
     def characteristic_function(self) -> Dict[Tuple, int]:
         """Returns the characteristic function of this weighted voting game."""
         return {coalition: 1 if sum(self.contributions[player - 1] for player in coalition) >= self.quorum else 0 for

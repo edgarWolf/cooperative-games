@@ -36,6 +36,29 @@ def test_constructor():
         game = WeightedVotingGame(contributions=weights, quorum=quorum)
 
 
+def test_repr():
+    weights = [1, 2, 3, ]
+    quorum = 4
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = "3 players game"
+    expected_output += "\n"
+    expected_output += "quorum = 4"
+    expected_output += "\n"
+    expected_output += "weights = [1, 2, 3]"
+    actual_output = game.__repr__()
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 4
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = "1 player game"
+    expected_output += "\n"
+    expected_output += "quorum = 4"
+    expected_output += "\n"
+    expected_output += "weights = [1]"
+    actual_output = game.__repr__()
+    assert expected_output == actual_output
+
 def test_characteristic_function():
     """Test the characteristic function of a weighted voting game."""
     weights = [1, 2, 3, ]

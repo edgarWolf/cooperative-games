@@ -29,6 +29,19 @@ class Game(BaseGame):
 
         self._contributions = contributions
 
+    def __repr__(self) -> str:
+        repr = super().__repr__()
+        max_contribs_to_show = 32
+        contribs_to_show = min(max_contribs_to_show, len(self.contributions))
+        repr += "contributions = ["
+        for i in range(contribs_to_show):
+            if i == contribs_to_show - 1:
+                repr += f"{self.contributions[i]}"
+            else:
+                repr += f"{self.contributions[i]}, "
+        repr += "]"
+        return repr
+
     def characteristic_function(self) -> Dict:
         """Returns the characteristic of this TU game."""
         return {coalition: contribution for coalition, contribution in zip(self.coalitions, self.contributions)}

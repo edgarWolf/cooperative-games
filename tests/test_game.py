@@ -15,7 +15,7 @@ def test_constructor():
         (1, 2, 3,),
     ]
     assert set(game.players) == set([1, 2, 3])
-    assert set(game.contributions) == set(contributions)  #
+    assert set(game.contributions) == set(contributions)
     assert set(game.coalitions) == set(expected_coalitions)
 
     # Test invalid contributions.
@@ -44,6 +44,24 @@ def test_constructor():
     assert set(game.players) == set([1])
     assert set(game.contributions) == set(contributions)
     assert set(game.coalitions) == set([(1,)])
+
+
+def test_repr():
+    contributions = [1, 2, 3, 3, 4, 5, 6]
+    game = Game(contributions=contributions)
+    expected_output = "3 players game"
+    expected_output += "\n"
+    expected_output += "contributions = [1, 2, 3, 3, 4, 5, 6]"
+    actual_output = game.__repr__()
+    assert expected_output == actual_output
+
+    contributions = [1]
+    game = Game(contributions=contributions)
+    expected_output = "1 player game"
+    expected_output += "\n"
+    expected_output += "contributions = [1]"
+    actual_output = game.__repr__()
+    assert expected_output == actual_output
 
 
 def test_characterisitc_function():

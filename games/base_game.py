@@ -17,6 +17,12 @@ class BaseGame(ABC):
         self._coalitions = []
         self._contributions = []
 
+    def __repr__(self) -> str:
+        num_players = len(self.players)
+        if num_players == 1:
+            return "1 player game\n"
+        return f"{len(self.players)} players game\n"
+
     @property
     def players(self) -> List[int]:
         """Property for players field."""
