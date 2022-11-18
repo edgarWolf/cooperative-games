@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import math
-from typing import List
+from typing import List, Tuple
 from games.weighted_voting_game import WeightedVotingGame
 
 
@@ -247,7 +247,7 @@ class RaeIndex(PowerIndex):
         W = game.get_winning_coalitions()
         W_len = len(W)
         n = len(game.players)
-        denominator = 2**n
+        denominator = 2 ** n
         R = []
         for player in game.players:
             W_i_len = len([col for col in W if player in col])
@@ -257,3 +257,43 @@ class RaeIndex(PowerIndex):
             R_sum = sum(R)
             R = [r / R_sum for r in R]
         return R
+
+
+class SolidarityValue(PowerIndex):
+    def compute(self, game: WeightedVotingGame) -> List[float]:
+        """
+        Returns a list of the solidarity values for all players in the game.
+        The solidarity value is defined as:
+        Psi_i(v) = sum_{T subseteq N, i in T} ((n - |T|)! (|T| - 1)!) / n! * A^v(T), where
+            - n denotes the number of players in the game.
+            - v denotes the characteristic function of the game.
+            - N denotes the grand coalition.
+            - A^v(T) denotes the average marinal contribution of a member of a coalition T,i.e
+                - A^v(T) = (sum_{j in T} (v(T) - v(T \ {j})) / |T|
+        """
+        n = len(game.players)
+        denominator = math.factorial(n)
+        S = []
+        for player in game.players:
+            coalitions_with_player = [col for col in game.coalitions if player in col]
+            t = 0
+            for col in coalitions_with_player:
+                T_len = len(col)
+                numerator = math.factorial(n - T_len) * math.factorial(T_len - 1)
+                term = numerator / denominator
+                A = self._A(game=game, T=col)
+                t += term * A
+            S.append(t)
+        return S
+
+    def _A(self, game: WeightedVotingGame, T: Tuple) -> float:
+        """Returns the average marginal contribution of a member of coalition T."""
+        v = game.characteristic_function().copy()
+        v[tuple()] = 0
+        T_len = len(T)
+        A = 0
+        for j in T:
+            T_without_j = tuple(sorted(p for p in T if p != j))
+            A += v[T] - v[T_without_j]
+        return A / T_len
+

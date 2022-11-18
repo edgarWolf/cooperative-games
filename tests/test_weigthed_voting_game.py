@@ -949,3 +949,40 @@ def test_rae_index():
     actual_output = rae.compute(game=game, normalized=True)
     assert expected_output == actual_output
 
+def test_solidarity_value():
+    s = SolidarityValue()
+
+    weights = [1, 1, 0]
+    quorum = 2
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [7 / 18, 7 / 18, 4 / 18]
+    actual_output = s.compute(game=game)
+    assert expected_output == pytest.approx(actual_output)
+
+    weights = [2, 1, 1, 1]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    actual_output = s.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1, 1, 0]
+    quorum = 5
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0, 0, 0]
+    actual_output = s.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 1
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [1]
+    actual_output = s.compute(game=game)
+    assert expected_output == actual_output
+
+    weights = [1]
+    quorum = 99
+    game = WeightedVotingGame(contributions=weights, quorum=quorum)
+    expected_output = [0]
+    actual_output = s.compute(game=game)
+    assert expected_output == actual_output
