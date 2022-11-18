@@ -244,7 +244,6 @@ class RaeIndex(PowerIndex):
             - W_i denotes the set of winning coalitions containg player i.
             - W denotes the set of winning coalitions.
         """
-        # TODO: Normalized version.
         W = game.get_winning_coalitions()
         W_len = len(W)
         n = len(game.players)
@@ -254,4 +253,7 @@ class RaeIndex(PowerIndex):
             W_i_len = len([col for col in W if player in col])
             term = (2 * W_i_len - W_len) / denominator
             R.append((1 / 2) + term)
+        if normalized:
+            R_sum = sum(R)
+            R = [r / R_sum for r in R]
         return R

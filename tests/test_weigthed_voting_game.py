@@ -893,34 +893,59 @@ def test_rae_index():
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [3 / 4, 3 / 4, 1 / 2]
-    actual_output = rae.compute(game=game)
+    actual_output = rae.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    # Normalized
+    expected_output = [3 / 8, 3 / 8, 1 / 4]
+    actual_output = rae.compute(game=game, normalized=True)
     assert expected_output == actual_output
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [9 / 16, 9 / 16, 9 / 16, 9 / 16]
-    actual_output = rae.compute(game=game)
+    actual_output = rae.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    # Normalized
+    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    actual_output = rae.compute(game=game, normalized=True)
     assert expected_output == actual_output
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [1 / 2, 1 / 2, 1 / 2]
-    actual_output = rae.compute(game=game)
+    actual_output = rae.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    # Normalized
+    expected_output = [1 / 3, 1 / 3, 1 / 3]
+    actual_output = rae.compute(game=game, normalized=True)
     assert expected_output == actual_output
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [1]
-    actual_output = rae.compute(game=game)
+    actual_output = rae.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    # Normalized
+    expected_output = [1]
+    actual_output = rae.compute(game=game, normalized=True)
     assert expected_output == actual_output
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [1 / 2]
-    actual_output = rae.compute(game=game)
+    actual_output = rae.compute(game=game, normalized=False)
+    assert expected_output == actual_output
+
+    # Normalized
+    expected_output = [1]
+    actual_output = rae.compute(game=game, normalized=True)
     assert expected_output == actual_output
 
