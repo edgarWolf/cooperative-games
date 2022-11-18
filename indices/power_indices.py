@@ -144,7 +144,10 @@ class JohnstonIndex(PowerIndex):
         for player in game.players:
             johnston_raw = 0
             for S, critical_players in VC.items():
-                r_S = 1 / len(critical_players)
+                num_critical_players = len(critical_players)
+                if num_critical_players == 0:
+                    continue
+                r_S = 1 / num_critical_players
                 r_j_s = r_S if player in critical_players else 0
                 johnston_raw += r_j_s
             johnston_indices.append(johnston_raw)
