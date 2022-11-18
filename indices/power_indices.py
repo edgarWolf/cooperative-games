@@ -234,7 +234,7 @@ class KoenigAndBraeuningerIndex(PowerIndex):
 
 
 class RaeIndex(PowerIndex):
-    def compute(self, game: WeightedVotingGame, normalized=True) -> List[float]:
+    def compute(self, game: WeightedVotingGame, normalized: bool = True) -> List[float]:
         """
         Returns a list of the rae indices for all players in the game.
         The rae index is defined as:
@@ -296,4 +296,23 @@ class SolidarityValue(PowerIndex):
             T_without_j = tuple(sorted(p for p in T if p != j))
             A += v[T] - v[T_without_j]
         return A / T_len
+
+
+class HollerIndex(PowerIndex):
+    def compute(self, game: WeightedVotingGame, normalized: bool = True) -> List[float]:
+        """
+        Returns a list of the holler indices for all players in the game.
+        The holler index is defined as:
+        X_i(v) = | W^m_i |, where
+            - v denotes the characteristic function of the game.
+            - W^m_i denotes the set of minmal winning coalitions containing player i.
+        """
+        W_min = game.get_minimal_winning_coalitions()
+        H = [len([w for w in W_min if i in w]) for i in game.players]
+        if normalized:
+            H_sum = sum(h for h in H)
+            H = [h / H_sum for h in H] if H_sum > 0 else [0 for _ in H]
+        return H
+
+
 
