@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from games.game import Game
+from cooperative_games.games import Game
 from numbers import Real
 from typing import List
 import math

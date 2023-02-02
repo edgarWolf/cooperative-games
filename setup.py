@@ -3,8 +3,8 @@ from setuptools import setup
 setup(
     name='cooperative-games',
     version='1.0',
-    packages=['games', 'tests', 'indices'],
-    url='',
+    packages=['tests', 'cooperative_games', 'cooperative_games.indices'],
+    url='https://github.com/edgarWolf/cooperative-games',
     license='',
     author='Edgar Wolf',
     author_email='edgar9.wolf.8@gmail.com',

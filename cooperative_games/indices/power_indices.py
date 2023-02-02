@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import math
 from typing import List, Tuple
-from games.weighted_voting_game import WeightedVotingGame
+from cooperative_games.games import WeightedVotingGame
 
 
 class PowerIndex(ABC):

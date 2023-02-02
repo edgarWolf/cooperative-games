@@ -1,7 +1,12 @@
 import numpy as np
 import pytest
-from games.game import Game
-from indices.power_values import *
+from cooperative_games.games import Game
+from cooperative_games.indices.power_values import (
+    ShapleyValue,
+    BanzhafValue,
+    GatelyPoint,
+    TauValue,
+)
 
 
 def test_constructor():

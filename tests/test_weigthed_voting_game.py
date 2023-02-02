@@ -1,6 +1,21 @@
 import pytest
-from games.weighted_voting_game import WeightedVotingGame
-from indices.power_indices import *
+from cooperative_games.games import WeightedVotingGame
+from cooperative_games.indices.power_indices import (
+    ShapleyShubikIndex,
+    BanzhafIndex,
+    ShiftIndex,
+    PublicGoodIndex,
+    PublicHelpIndex,
+    JohnstonIndex,
+    EgalitarianIndex,
+    GnMinusIndex,
+    NevisonIndex,
+    KoenigAndBraeuningerIndex,
+    RaeIndex,
+    SolidarityValue,
+    HollerIndex,
+    DeeganPackelIndex
+)
 
 
 def test_constructor():
