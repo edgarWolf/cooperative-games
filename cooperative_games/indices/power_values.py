@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
 from cooperative_games.games import Game
-from numbers import Real
-from typing import List
 import math
 import numpy as np
 
 
 class PowerValue(ABC):
     @abstractmethod
-    def compute(self, game: Game) -> List[float]:
+    def compute(self, game: Game) -> np.ndarray:
         pass
 
 
@@ -16,7 +14,7 @@ class ShapleyValue(PowerValue):
     def __repr__(self):
         return "Shapley Value"
 
-    def compute(self, game: Game) -> List[float]:
+    def compute(self, game: Game) -> np.ndarray:
         """
         Returns a list of the shapley values for all players in the game.
         The shapley value for a player j is defined as:
@@ -28,9 +26,9 @@ class ShapleyValue(PowerValue):
         n = len(game.players)
         factorial_n = math.factorial(n)
         v = game.characteristic_function()
-        shapley_values = []
+        shapley_values = np.zeros((n,))
 
-        for player in game.players:
+        for i, player in enumerate(game.players):
             # Initiate with marginal contribution for player's one coalition, multiplied by the complement factorial 
             # (always n-1, since the lenght of the empty coalition is 0).
             shapley_value = v[(player,)] * math.factorial(n - 1)
@@ -41,7 +39,7 @@ class ShapleyValue(PowerValue):
                 complement_factorial = math.factorial(n - C_len - 1)
                 pivot_term = v[tuple(sorted(C + (player,)))] - v[C]
                 shapley_value += C_len_factorial * complement_factorial * pivot_term
-            shapley_values.append(shapley_value / factorial_n)
+            shapley_values[i] = shapley_value / factorial_n
         return shapley_values
 
 
@@ -49,7 +47,7 @@ class BanzhafValue(PowerValue):
     def __repr__(self):
         return "Banzhaf Value"
 
-    def compute(self, game: Game, normalized: bool = True) -> List[float]:
+    def compute(self, game: Game, normalized: bool = True) -> np.ndarray:
         """
         Returns a list of the banzhaf-values for all players in the game.
         The banzhaf-value can be defined as an absolute value, and a relative value.
@@ -64,7 +62,7 @@ class BanzhafValue(PowerValue):
         """
         K = self.__K(game) if normalized else 1 / (2 ** (len(game.players) - 1))
         marg_sums = self.__marginal_contributions_sum(game)
-        return [K * b for b in marg_sums]
+        return np.array([K * b for b in marg_sums])
 
     def __K(self, game: Game) -> float:
         """Returns the coeffient for the absolute banzhaf value."""
@@ -73,14 +71,15 @@ class BanzhafValue(PowerValue):
         marg_sums = self.__marginal_contributions_sum(game)
         return v[N] / sum(marg_sums)
 
-    def __marginal_contributions_sum(self, game: Game) -> List[Real]:
+    def __marginal_contributions_sum(self, game: Game) -> np.ndarray:
         """Returns a list of the sum of marginal contributions for each player in the game."""
         v = game.characteristic_function()
-        marg_sums = []
-        for player in game.players:
+        n = len(game.players)
+        marg_sums = np.zeros((n,))
+        for i, player in enumerate(game.players):
             coalitions_without_player = [coalition for coalition in game.coalitions if player not in coalition]
             marg_sum = v[(player,)] + sum(v[tuple(sorted(C + (player,)))] - v[C] for C in coalitions_without_player)
-            marg_sums.append(marg_sum)
+            marg_sums[i] = marg_sum
         return marg_sums
 
 
@@ -88,7 +87,7 @@ class GatelyPoint(PowerValue):
     def __repr__(self):
         return "Gatley Point"
 
-    def compute(self, game: Game) -> List[float]:
+    def compute(self, game: Game) -> np.ndarray:
         """
         Returns a list of the gately points for all players in the game.
         The gately point for a player i is defined as:
@@ -103,12 +102,13 @@ class GatelyPoint(PowerValue):
         v = game.characteristic_function()
         N = game.coalitions[-1]
         M = game.get_utopia_payoff_vector()
+        n = len(game.players)
 
         if len(game.players) == 1:
-            return [v[(game.players[0],)]]
+            return np.array([v[(game.players[0],)]])
 
-        X = []
-        for player in game.players:
+        X = np.zeros((n,))
+        for i, player in enumerate(game.players):
             v_i = v[(player,)]
             M_i = M[player - 1]
             sum_v_j = sum(v[j] for j in game.get_one_coalitions())
@@ -116,7 +116,7 @@ class GatelyPoint(PowerValue):
             player_loss = M_i - v_i
             common_loss = sum(M) - sum_v_j
             x_i = v_i + N_one_coalitions_diff * (player_loss / common_loss)
-            X.append(x_i)
+            X[i] = x_i
         return X
 
 
@@ -124,7 +124,7 @@ class TauValue(PowerValue):
     def __repr__(self):
         return "Tau Value"
 
-    def compute(self, game: Game) -> List[float]:
+    def compute(self, game: Game) -> np.ndarray:
         """
         Returns a list of the tau Values for all players in the game.
         The tau value for a player i is defined as:
@@ -138,10 +138,11 @@ class TauValue(PowerValue):
         the minimal-rights-vector and the utopia-payoff-vector.
         """
         v = game.characteristic_function()
+        n = len(game.players)
 
         # Edge case 1 player.
-        if len(game.players) == 1:
-            return [v[(game.players[0],)]]
+        if n == 1:
+            return np.array([v[(game.players[0],)]])
 
         N = game.coalitions[-1]
         m = game.get_minimal_rights_vector()
@@ -166,6 +167,6 @@ class TauValue(PowerValue):
         alpha = np.linalg.solve(coeffs, constant)[0]
 
         # Compute and return tau vector.
-        return [m_i + alpha * (M_i - m_i) for m_i, M_i in zip(m, M)]
+        return np.array([m_i + alpha * (M_i - m_i) for m_i, M_i in zip(m, M)])
 
 

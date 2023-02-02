@@ -332,33 +332,33 @@ def test_shapley_value():
     contributions = [2, 4, 5, 18, 14, 9, 24]
     shapley = ShapleyValue()
     game = Game(contributions=contributions)
-    expected_output = [9.5, 8, 6.5]
+    expected_output = np.array([9.5, 8, 6.5])
     actual_output = shapley.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [0, 0, 0, 1, 2, 3, 7.5]
     game = Game(contributions=contributions)
-    expected_output = [2, 2.5, 3.0]
+    expected_output = np.array([2, 2.5, 3.0])
     actual_output = shapley.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [120, 60, 40, 30, 120, 120, 120, 60, 60, 40, 120, 120, 120, 60, 120]
     game = Game(contributions=contributions)
-    expected_output = [80.83333, 20.83333, 10.83333, 7.50000]
+    expected_output = np.array([80.83333, 20.83333, 10.83333, 7.50000])
     actual_output = shapley.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = shapley.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [42]
     game = Game(contributions=contributions)
-    expected_output = [42]
+    expected_output = np.array([42])
     actual_output = shapley.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_banzhaf_value():
@@ -367,34 +367,34 @@ def test_banzhaf_value():
     # Test normalized
     contributions = [0, 0, 0, 1, 2, 1, 3]
     game = Game(contributions=contributions)
-    expected_output = [15 / 13, 9 / 13, 15 / 13]
+    expected_output = np.array([15 / 13, 9 / 13, 15 / 13])
     actual_output = banzhaf.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     # Test absolute.
-    expected_output = [1.25, 0.75, 1.25]
+    expected_output = np.array([1.25, 0.75, 1.25])
     actual_output = banzhaf.compute(game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [0, 0, 0, 1, 2, 1, 4]
     game = Game(contributions=contributions)
-    expected_output = [3 / 2, 1, 3 / 2]
+    expected_output = np.array([3 / 2, 1, 3 / 2])
     actual_output = banzhaf.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
-    expected_output = [1.5, 1, 1.5]
+    expected_output = np.array([1.5, 1, 1.5])
     actual_output = banzhaf.compute(game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = banzhaf.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [42]
     game = Game(contributions=contributions)
-    expected_output = [42]
+    expected_output = np.array([42])
     actual_output = banzhaf.compute(game)
     assert expected_output == actual_output
 
@@ -404,33 +404,33 @@ def test_gately_point():
 
     contributions = [0, 0, 0, 1, 1, 1, 3.5]
     game = Game(contributions=contributions)
-    expected_output = [1.166667, 1.166667, 1.166667]
+    expected_output = np.full((3,), 1.166667)
     actual_output = gately.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     contributions = [0, 0, 0, 4, 0, 3, 6]
     game = Game(contributions=contributions)
-    expected_output = [18 / 11, 36 / 11, 12 / 11]
+    expected_output = np.array([18 / 11, 36 / 11, 12 / 11])
     actual_output = gately.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     contributions = [0, 0, 0, 1170, 770, 210, 1530]
     game = Game(contributions=contributions)
-    expected_output = [827.7049, 476.5574, 225.7377]
+    expected_output = np.array([827.7049, 476.5574, 225.7377])
     actual_output = gately.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = gately.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [42]
     game = Game(contributions=contributions)
-    expected_output = [42]
+    expected_output = np.array([42])
     actual_output = gately.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_tau_value():
@@ -438,24 +438,24 @@ def test_tau_value():
 
     contributions = [0, 0, 0, 0, 1, 0, 1]
     game = Game(contributions=contributions)
-    expected_output = [1 / 2, 0, 1 / 2]
+    expected_output = np.array([1 / 2, 0, 1 / 2])
     actual_output = tau.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     contributions = [2, 4, 5, 18, 14, 9, 24]
     game = Game(contributions=contributions)
-    expected_output = [11.5, 7, 5.5]
+    expected_output = np.array([11.5, 7, 5.5])
     actual_output = tau.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     contributions = [0, 0, 0, 1, 2, 1, 3]
     game = Game(contributions=contributions)
-    expected_output = [1.2, 0.6, 1.2]
+    expected_output = np.array([1.2, 0.6, 1.2])
     actual_output = tau.compute(game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
 
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = [1]
+    expected_output = np.array([1])
     actual_output = tau.compute(game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
