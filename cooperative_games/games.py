@@ -125,7 +125,7 @@ class Game(BaseGame):
 
         return coalition_payoff - coalition_without_player_payoff
 
-    def get_utopia_payoff_vector(self) -> List[float]:
+    def get_utopia_payoff_vector(self) -> np.ndarray:
         """
         Returns a list of the utopia-payoffs for all players in the game.
         The utopia-payoff M_i of a player i is defined as
@@ -135,15 +135,16 @@ class Game(BaseGame):
         """
         N = self.coalitions[-1]
         v = self.characteristic_function()
+        n = len(self.players)
         v_N = v[N]
-        M = []
-        for player in self.players:
+        M = np.zeros((n,))
+        for i, player in enumerate(self.players):
             N_without_i = tuple(sorted(p for p in N if p != player))
             v_N_without_i = v[N_without_i] if N_without_i in v else 0
-            M.append(v_N - v_N_without_i)
+            M[i] = v_N - v_N_without_i
         return M
 
-    def get_imputation_vertices(self) -> List[List[float]]:
+    def get_imputation_vertices(self) -> np.ndarray:
         """
         Returns a matrix representing the imputation vertices of the game.
         On a input of a n-player game, a n x n matrix is being returned, each row representing a vertex of a imputation.
@@ -159,7 +160,7 @@ class Game(BaseGame):
         n = len(self.players)
 
         if n == 1:
-            return [[v[(1),]]]
+            return np.array([[v[(1),]]])
 
         # The bounds for the payoffs for the individual players.
         lower_bounds = [v[coalition] for coalition in self.get_one_coalitions()]
@@ -168,11 +169,13 @@ class Game(BaseGame):
         bounds = [(lb, ub) for lb, ub in zip(lower_bounds, upper_bounds)]
 
         # Calculate the impuation vertices, based on the indivdual payoffs and the efficiency constraint.
-        X = []
+        X = np.zeros((n,n))
         for i, _ in enumerate(bounds):
             x = [bound[1] if i == j else bound[0] for j, bound in enumerate(bounds)]
-            if x not in X:
-                X.append(x)
+            X[i] = x
+
+        # Remove duplicate vectors.
+        X = np.unique(X, axis=0)
         return X
 
     def get_core_vertices(self) -> np.ndarray:
@@ -217,7 +220,7 @@ class Game(BaseGame):
             [np.round(linprog(c, A_eq=A_eq, b_eq=b_eq, A_ub=A_ub, b_ub=b_ub, bounds=bounds).x).astype(int) for c in C],
             axis=0)
 
-    def is_convex(self):
+    def is_convex(self) -> bool:
         v = self.characteristic_function().copy()
         v[tuple()] = 0
         for i, C in enumerate(self.coalitions):
@@ -233,7 +236,7 @@ class Game(BaseGame):
                     return False
         return True
 
-    def is_additive(self):
+    def is_additive(self) -> bool:
         v = self.characteristic_function().copy()
         v[tuple()] = 0
         for i, A, in enumerate(self.coalitions):
@@ -282,7 +285,7 @@ class Game(BaseGame):
 
         return np.array(C_res)
 
-    def get_minimal_rights_vector(self) -> List[float]:
+    def get_minimal_rights_vector(self) -> np.ndarray:
         """
         Returns a list representing the minimal rights vector of the game.
         The minimal rights vector consists of the maximum remainders R(S, i) for a player i in coalition S.
@@ -294,16 +297,17 @@ class Game(BaseGame):
         """
         v = self.characteristic_function()
         M = self.get_utopia_payoff_vector()
-        R = []
-        for i in self.players:
-            S_vec = [S for S in self.coalitions if i in S]
-            R_S = []
-            for S in S_vec:
+        n = len(self.players)
+        R = np.zeros((n,))
+        for i, player in enumerate(self.players):
+            S_vec = [S for S in self.coalitions if player in S]
+            R_S = np.zeros((len(S_vec),))
+            for j, S in enumerate(S_vec):
                 v_S = v[S]
-                M_j_sum = sum(M_j for index, M_j in enumerate(M) if (index + 1) != i and (index + 1) in S)
+                M_j_sum = np.sum(M_j for index, M_j in enumerate(M) if (index + 1) != player and (index + 1) in S)
                 R_s_i = v_S - M_j_sum
-                R_S.append(R_s_i)
-            R.append(max(R_S))
+                R_S[j] = R_s_i
+            R[i] = np.max(R_S)
         return R
 
     def __check_if_contributions_are_monotone(self, contributions: List[int]) -> bool:

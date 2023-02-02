@@ -136,108 +136,108 @@ def test_get_utopia_payoff_vector():
     # Test usual setting.
     contributions = [1, 2, 3, 3, 4, 5, 6]
     game = Game(contributions=contributions)
-    expected_output = [1, 2, 3]
+    expected_output = np.array([1, 2, 3])
     actual_output = game.get_utopia_payoff_vector()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [0, 0, 0, 60, 60, 60, 72]
     game = Game(contributions=contributions)
-    expected_output = [12, 12, 12]
+    expected_output = np.full((3,), 12)
     actual_output = game.get_utopia_payoff_vector()
-    assert expected_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [1, 2, 3, 3, 5, 5, 8]
     game = Game(contributions=contributions)
-    expected_output = [3, 3, 5]
+    expected_output = np.array([3, 3, 5])
     actual_output = game.get_utopia_payoff_vector()
-    assert expected_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = game.get_utopia_payoff_vector()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_get_minimal_rights_vector():
     # Test usual setting.
     contributions = [1, 2, 3, 3, 4, 5, 6]
     game = Game(contributions=contributions)
-    expected_output = [1, 2, 3]
+    expected_output = np.array([1, 2, 3])
     actual_output = game.get_minimal_rights_vector()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [0, 0, 0, 60, 60, 60, 72]
     game = Game(contributions=contributions)
-    expected_output = [48, 48, 48]
+    expected_output = np.full((3,), 48)
     actual_output = game.get_minimal_rights_vector()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [2, 4, 5, 18, 14, 9, 24]
     game = Game(contributions=contributions)
-    expected_output = [8, 4, 5]
+    expected_output = np.array([8, 4, 5])
     actual_output = game.get_minimal_rights_vector()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [1, 2, 3, 3, 5, 5, 8]
     game = Game(contributions=contributions)
-    expected_output = [1, 2, 3]
+    expected_output = np.array([1, 2, 3])
     actual_output = game.get_minimal_rights_vector()
-    assert expected_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = game.get_minimal_rights_vector()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_get_imputation_vertices():
     contributions = [1, 2, 3, 3, 4, 5, 6]
     game = Game(contributions=contributions)
-    expected_output = [
-        [1, 2, 3],
-    ]
+    expected_output = np.array([
+        np.array([1, 2, 3]),
+    ])
     actual_output = game.get_imputation_vertices()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [1, 2, 3, 3, 5, 5, 8]
     game = Game(contributions=contributions)
-    expected_output = [
-        [3, 2, 3, ],
-        [1, 4, 3, ],
-        [1, 2, 5],
-    ]
-    actual_output = game.get_minimal_rights_vector()
-    assert expected_output
+    expected_output = np.array([
+        np.array([1, 2, 5]),
+        np.array([1, 4, 3]),
+        np.array([3, 2, 3]),
+    ])
+    actual_output = game.get_imputation_vertices()
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [0, 0, 0, 60, 60, 60, 72]
     game = Game(contributions=contributions)
-    expected_output = [
-        [72, 0, 0],
-        [0, 72, 0],
-        [0, 0, 72],
-    ]
+    expected_output = np.array([
+        np.array([0, 0, 72]),
+        np.array([0, 72, 0]),
+        np.array([72, 0, 0]),
+    ])
     actual_output = game.get_imputation_vertices()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [2, 4, 5, 18, 24, 9, 24]
     game = Game(contributions=contributions)
-    expected_output = [
-        [15, 4, 5],
-        [2, 17, 5],
-        [2, 4, 18],
-    ]
+    expected_output = np.array([
+        np.array([2, 4, 18]),
+        np.array([2, 17, 5]),
+        np.array([15, 4, 5]),
+    ])
     actual_output = game.get_imputation_vertices()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     contributions = [1]
     game = Game(contributions=contributions)
-    expected_output = [
-        [1, ]
-    ]
+    expected_output = np.array([
+        np.array([1])
+    ])
     actual_output = game.get_imputation_vertices()
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_get_core_vertices():
