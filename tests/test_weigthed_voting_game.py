@@ -1,4 +1,5 @@
 import pytest
+import numpy as np
 from cooperative_games.games import WeightedVotingGame
 from cooperative_games.indices.power_indices import (
     ShapleyShubikIndex,
@@ -536,25 +537,25 @@ def test_shapley_shubik_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [2 / 3, 1 / 6, 1 / 6]
+    expected_output = np.array([2 / 3, 1 / 6, 1 / 6])
     actual_output = shapley.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = shapley.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: Only one winning coalition.
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
     actual_output = shapley.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Edge case: 1 player
     weights = [1]
@@ -562,7 +563,7 @@ def test_shapley_shubik_index():
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
     expected_output = [1]
     actual_output = shapley.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_banzhaf_index():
@@ -573,33 +574,33 @@ def test_banzhaf_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [3 / 5, 1 / 5, 1 / 5]
+    expected_output = np.array([3 / 5, 1 / 5, 1 / 5])
     actual_output = banzhaf.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = banzhaf.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: Only one winning coalition.
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
     actual_output = banzhaf.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Edge case: 1 player
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.array([1])
     actual_output = banzhaf.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_johnston_index():
@@ -610,33 +611,33 @@ def test_johnston_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [2 / 3, 1 / 6, 1 / 6]
+    expected_output = np.array([2 / 3, 1 / 6, 1 / 6])
     actual_output = johnston.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = johnston.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: Only one winning coalition.
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
     actual_output = johnston.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Edge case: 1 player
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.array([1])
     actual_output = johnston.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_pgi_index():
@@ -647,33 +648,33 @@ def test_pgi_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 2, 1 / 4, 1 / 4])
     actual_output = pgi.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = pgi.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: Only one winning coalition.
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
     actual_output = pgi.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Edge case: 1 player
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.array([1])
     actual_output = pgi.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_phi_index():
@@ -684,33 +685,34 @@ def test_phi_index():
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [3 / 7, 2 / 7, 2 / 7]
+    expected_output = np.array([3 / 7, 2 / 7, 2 / 7])
     actual_output = phi.compute(game=game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
+    #assert np.array_equal(expected_output, pytest.approx(actual_output))
 
     # Special case: One player is never pivot player.
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [2 / 5, 2 / 5, 1 / 5]
+    expected_output = np.array([2 / 5, 2 / 5, 1 / 5])
     actual_output = phi.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Special case: Only one winning coalition.
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
     actual_output = phi.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Edge case: 1 player
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.array([1])
     actual_output = phi.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_shift_index():
@@ -720,52 +722,52 @@ def test_shift_index():
     weights = [1, 2, 3, ]
     quorum = 4
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 0, 1 / 2]
+    expected_output = np.array([1 / 2, 0, 1 / 2])
     actual_output = shift.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [7, 3, 3]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 2, 1 / 4, 1 / 4])
     actual_output = shift.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [5, 2, 2, 1, 1]
     quorum = 6
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 8, 1 / 8, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 8, 1 / 8, 1 / 4, 1 / 4])
     actual_output = shift.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [8, 4, 1]
     quorum = 10
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = shift.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
     actual_output = shift.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [5, 40, 26, 25, 4]
     quorum = 51
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 1 / 2, 1 / 2, 0]
+    expected_output = np.array([0, 0, 1 / 2, 1 / 2, 0])
     actual_output = shift.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Edge case: 1 player
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.array([1])
     actual_output = shift.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_egalitarian_index():
@@ -774,37 +776,37 @@ def test_egalitarian_index():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 3, 1 / 3, 1 / 3]
+    expected_output = np.array([1 / 3, 1 / 3, 1 / 3])
     actual_output = e.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.array([1 / 4, 1 / 4, 1 / 4, 1 / 4])
     actual_output = e.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = e.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.array([1])
     actual_output = e.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0]
+    expected_output = np.array([0])
     actual_output = e.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_gn_minus_index():
@@ -813,37 +815,37 @@ def test_gn_minus_index():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = g.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.full((4,), 1 / 4)
     actual_output = g.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = g.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = g.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = g.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_nevison_index():
@@ -852,37 +854,37 @@ def test_nevison_index():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [2 / 4, 2 / 4, 1 / 4]
+    expected_output = np.array([2 / 4, 2 / 4, 1 / 4])
     actual_output = nevison.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 8, 1 / 8, 1 / 8, 1 / 8]
+    expected_output = np.full((4,), 1 / 8)
     actual_output = nevison.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = nevison.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = nevison.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = nevison.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_koenig_and_braeuninger_index():
@@ -891,37 +893,37 @@ def test_koenig_and_braeuninger_index():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1, 1, 1 / 2]
+    expected_output = np.array([1, 1, 1 / 2])
     actual_output = kb.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1, 1, 1, 1]
+    expected_output = np.ones((4,))
     actual_output = kb.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = kb.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = kb.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = kb.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_rae_index():
@@ -930,62 +932,62 @@ def test_rae_index():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [3 / 4, 3 / 4, 1 / 2]
+    expected_output = np.array([3 / 4, 3 / 4, 1 / 2])
     actual_output = rae.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Normalized
-    expected_output = [3 / 8, 3 / 8, 1 / 4]
+    expected_output = np.array([3 / 8, 3 / 8, 1 / 4])
     actual_output = rae.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [9 / 16, 9 / 16, 9 / 16, 9 / 16]
+    expected_output = np.full((4,), 9 / 16)
     actual_output = rae.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Normalized
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.full((4,), 1 / 4)
     actual_output = rae.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 1 / 2]
+    expected_output = np.full((3,), 1 / 2)
     actual_output = rae.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Normalized
-    expected_output = [1 / 3, 1 / 3, 1 / 3]
+    expected_output = np.full((3,), 1 / 3)
     actual_output = rae.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = rae.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Normalized
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = rae.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2]
+    expected_output = np.array([1 / 2])
     actual_output = rae.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     # Normalized
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = rae.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 def test_solidarity_value():
     s = SolidarityValue()
@@ -993,37 +995,38 @@ def test_solidarity_value():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [7 / 18, 7 / 18, 4 / 18]
+    expected_output = np.array([7 / 18, 7 / 18, 4 / 18])
     actual_output = s.compute(game=game)
-    assert expected_output == pytest.approx(actual_output)
+    assert np.allclose(expected_output, actual_output)
+    #assert np.array_equal(expected_output, pytest.approx(actual_output))
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.full((4,), 1 / 4)
     actual_output = s.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = s.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = s.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = s.compute(game=game)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 
 def test_holler_index():
@@ -1032,57 +1035,57 @@ def test_holler_index():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1, 1, 0]
+    expected_output = np.array([1, 1, 0])
     actual_output = holler.compute(game=game, normalized=False)
-    assert  expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = holler.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1, 1, 1, 1]
+    expected_output = np.ones((4,))
     actual_output = holler.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.full((4,), 1 / 4)
     actual_output = holler.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = holler.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = holler.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = holler.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = holler.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = holler.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = holler.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
 def test_deegan_packel_index():
     dpi = DeeganPackelIndex()
@@ -1090,54 +1093,54 @@ def test_deegan_packel_index():
     weights = [1, 1, 0]
     quorum = 2
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = dpi.compute(game=game, normalized=False)
-    assert  expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [1 / 2, 1 / 2, 0]
+    expected_output = np.array([1 / 2, 1 / 2, 0])
     actual_output = dpi.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [2, 1, 1, 1]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.full((4,), 1 / 4)
     actual_output = dpi.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [1 / 4, 1 / 4, 1 / 4, 1 / 4]
+    expected_output = np.full((4,), 1 / 4)
     actual_output = dpi.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1, 1, 0]
     quorum = 5
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = dpi.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [0, 0, 0]
+    expected_output = np.zeros((3,))
     actual_output = dpi.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 1
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = dpi.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [1]
+    expected_output = np.ones((1,))
     actual_output = dpi.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
     weights = [1]
     quorum = 99
     game = WeightedVotingGame(contributions=weights, quorum=quorum)
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = dpi.compute(game=game, normalized=False)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
 
-    expected_output = [0]
+    expected_output = np.zeros((1,))
     actual_output = dpi.compute(game=game, normalized=True)
-    assert expected_output == actual_output
+    assert np.array_equal(expected_output, actual_output)
