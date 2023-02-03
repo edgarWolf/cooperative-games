@@ -144,13 +144,25 @@ class Game(BaseGame):
             M[i] = v_N - v_N_without_i
         return M
 
-    def _get_imputation_bounds(self):
+    def _get_imputation_bounds(self) -> List[Tuple]:
         v = self.characteristic_function()
         N = self.coalitions[-1]
         lower_bounds = [v[coalition] for coalition in self.get_one_coalitions()]
         upper_bounds = [v[N] - sum(lb for j, lb in enumerate(lower_bounds) if j != i) for i, _ in
                         enumerate(lower_bounds)]
         return [(lb, ub) for lb, ub in zip(lower_bounds, upper_bounds)]
+
+    def is_imputation(self, x) -> bool:
+        """
+        Checks wheter a given vector is in the imputation set.
+        """
+        if len(x) != len(self.players):
+            raise ValueError("Imputation vector's length does not match the number of players in the game.")
+        N = self.coalitions[-1]
+        v_N = self.characteristic_function()[N]
+        bounds = self._get_imputation_bounds()
+        # Check if point lies within the range and for pareto efficiency.
+        return all([lb <= p <= ub for p, (lb, ub) in zip(x, bounds)]) and sum(x) == v_N
 
     def get_imputation_vertices(self) -> np.ndarray:
         """
