@@ -144,6 +144,14 @@ class Game(BaseGame):
             M[i] = v_N - v_N_without_i
         return M
 
+    def _get_imputation_bounds(self):
+        v = self.characteristic_function()
+        N = self.coalitions[-1]
+        lower_bounds = [v[coalition] for coalition in self.get_one_coalitions()]
+        upper_bounds = [v[N] - sum(lb for j, lb in enumerate(lower_bounds) if j != i) for i, _ in
+                        enumerate(lower_bounds)]
+        return [(lb, ub) for lb, ub in zip(lower_bounds, upper_bounds)]
+
     def get_imputation_vertices(self) -> np.ndarray:
         """
         Returns a matrix representing the imputation vertices of the game.
@@ -156,20 +164,16 @@ class Game(BaseGame):
         The imputations of the game is the convex hull of the obtained imputation vertices.
         """
         v = self.characteristic_function()
-        N = self.coalitions[-1]
         n = len(self.players)
 
         if n == 1:
             return np.array([[v[(1),]]])
 
         # The bounds for the payoffs for the individual players.
-        lower_bounds = [v[coalition] for coalition in self.get_one_coalitions()]
-        upper_bounds = [v[N] - sum(lb for j, lb in enumerate(lower_bounds) if j != i) for i, _ in
-                        enumerate(lower_bounds)]
-        bounds = [(lb, ub) for lb, ub in zip(lower_bounds, upper_bounds)]
+        bounds = self._get_imputation_bounds()
 
         # Calculate the impuation vertices, based on the indivdual payoffs and the efficiency constraint.
-        X = np.zeros((n,n))
+        X = np.zeros((n, n))
         for i, _ in enumerate(bounds):
             x = [bound[1] if i == j else bound[0] for j, bound in enumerate(bounds)]
             X[i] = x
