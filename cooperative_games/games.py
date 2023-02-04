@@ -144,7 +144,7 @@ class Game(BaseGame):
             M[i] = v_N - v_N_without_i
         return M
 
-    def _get_imputation_bounds(self) -> List[Tuple]:
+    def _get_core_bounds(self) -> List[Tuple]:
         v = self.characteristic_function()
         N = self.coalitions[-1]
         lower_bounds = [v[coalition] for coalition in self.get_one_coalitions()]
@@ -152,15 +152,28 @@ class Game(BaseGame):
                         enumerate(lower_bounds)]
         return [(lb, ub) for lb, ub in zip(lower_bounds, upper_bounds)]
 
-    def is_imputation(self, x) -> bool:
+    def is_in_imputation_set(self, x) -> bool:
         """
         Checks wheter a given vector is in the imputation set.
         """
         if len(x) != len(self.players):
-            raise ValueError("Imputation vector's length does not match the number of players in the game.")
+            raise ValueError("Input vector's length does not match the number of players in the game.")
+        N = self.coalitions[-1]
+        v = self.characteristic_function()
+        v_N = v[N]
+        v_one_coalitions = [v[c] for c in self.get_one_coalitions()]
+        # Check if point lies within the range and for pareto efficiency.
+        return all([lb <= p for p, lb in zip(x, v_one_coalitions)]) and sum(x) == v_N
+
+    def is_in_core(self, x) -> bool:
+        """
+        Checks wheter a given vector is in the core..
+        """
+        if len(x) != len(self.players):
+            raise ValueError("Input vector's length does not match the number of players in the game.")
         N = self.coalitions[-1]
         v_N = self.characteristic_function()[N]
-        bounds = self._get_imputation_bounds()
+        bounds = self._get_core_bounds()
         # Check if point lies within the range and for pareto efficiency.
         return all([lb <= p <= ub for p, (lb, ub) in zip(x, bounds)]) and sum(x) == v_N
 
@@ -182,7 +195,7 @@ class Game(BaseGame):
             return np.array([[v[(1),]]])
 
         # The bounds for the payoffs for the individual players.
-        bounds = self._get_imputation_bounds()
+        bounds = self._get_core_bounds()
 
         # Calculate the impuation vertices, based on the indivdual payoffs and the efficiency constraint.
         X = np.zeros((n, n))

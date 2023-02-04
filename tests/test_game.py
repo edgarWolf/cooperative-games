@@ -243,24 +243,47 @@ def test_is_imputation():
     contributions = [0, 1, 2, 3, 4, 5, 6]
     game = Game(contributions=contributions)
     expceted_output = True
-    actual_output = game.is_imputation([1.5, 1, 3.5])
+    actual_output = game.is_in_imputation_set([1.5, 1, 3.5])
     assert expceted_output == actual_output
 
     expceted_output = False
-    actual_output = game.is_imputation([2.05, 2, 2])
+    actual_output = game.is_in_imputation_set([2.05, 2, 2])
     assert expceted_output == actual_output
 
     contributions = [1]
     game = Game(contributions=contributions)
     expceted_output = True
-    actual_output = game.is_imputation([1])
+    actual_output = game.is_in_imputation_set([1])
     assert expceted_output == actual_output
 
     contributions = [99]
     game = Game(contributions=contributions)
     expceted_output = False
-    actual_output = game.is_imputation([1])
+    actual_output = game.is_in_imputation_set([1])
     assert expceted_output == actual_output
+
+def test_is_in_core():
+    contributions = [0, 1, 2, 3, 4, 5, 6]
+    game = Game(contributions=contributions)
+    expected_output = True
+    actual_output = game.is_in_core([1, 2, 3])
+    assert expected_output == actual_output
+
+    expected_output = False
+    actual_output = game.is_in_core([1, 2, 4])
+    assert expected_output == actual_output
+
+    contributions = [1]
+    game = Game(contributions=contributions)
+    expected_output = True
+    actual_output = game.is_in_core([1])
+    assert expected_output == actual_output
+
+    contributions = [99]
+    game = Game(contributions=contributions)
+    expected_output = False
+    actual_output = game.is_in_core([1])
+    assert expected_output == actual_output
 
 
 def test_get_core_vertices():
